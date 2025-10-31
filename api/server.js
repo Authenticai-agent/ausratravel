@@ -119,7 +119,8 @@ app.post('/api/booking', async (req, res) => {
       let questionnaireHtml = '';
       if (physical_ability || interests || activity_level || marketing_source) {
         questionnaireHtml = '<h3>Questionnaire Data</h3>';
-        if (interests && Array.isArray(interests)) questionnaireHtml += `<p><strong>Interests:</strong> ${interests.join(', ')}</p>`;
+        const interestsList = Array.isArray(interests) ? interests : (interests ? interests.split(',').map(i => i.trim()) : []);
+        if (interestsList.length > 0) questionnaireHtml += `<p><strong>Interests:</strong> ${interestsList.join(', ')}</p>`;
         if (activity_level) questionnaireHtml += `<p><strong>Activity Level:</strong> ${activity_level}</p>`;
         if (group_preference) questionnaireHtml += `<p><strong>Group Preference:</strong> ${group_preference}</p>`;
         if (marketing_source) questionnaireHtml += `<p><strong>Marketing Source:</strong> ${marketing_source}</p>`;

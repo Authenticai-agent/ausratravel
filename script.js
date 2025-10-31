@@ -196,7 +196,32 @@ if (form) {
     if (msg) msg.className = 'form-message';
     if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
-    const payload = Object.fromEntries(new FormData(form).entries());
+    // Build payload with questionnaire data
+    const formData = new FormData(form);
+    const payload = {};
+    
+    // Get all form fields
+    for (const [key, value] of formData.entries()) {
+      if (key === 'interests') {
+        if (!payload.interests) payload.interests = [];
+        payload.interests.push(value);
+      } else {
+        payload[key] = value;
+      }
+    }
+    
+    // Add questionnaire data from sessionStorage
+    const questionnaireData = sessionStorage.getItem('questionnaireData');
+    if (questionnaireData) {
+      const qData = JSON.parse(questionnaireData);
+      Object.keys(qData).forEach(key => {
+        if (key === 'interests' && Array.isArray(qData[key])) {
+          payload.interests = qData[key];
+        } else if (qData[key] && !payload[key]) {
+          payload[key] = qData[key];
+        }
+      });
+    }
 
     // basic min nights check client-side
     const parts = (payload.dates || '').split(' to ');
@@ -428,32 +453,6 @@ if (proceedBtn) {
   });
 }
 
-// Include questionnaire data in booking submission
-const bookingForm = document.querySelector('.booking-form');
-if (bookingForm) {
-  bookingForm.addEventListener('submit', async (e) => {
-    // Get questionnaire data if available and add as hidden fields
-    const questionnaireData = sessionStorage.getItem('questionnaireData');
-    if (questionnaireData) {
-      const data = JSON.parse(questionnaireData);
-      
-      // Create hidden fields for questionnaire data
-      Object.keys(data).forEach(key => {
-        const value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
-        if (value) {
-          let hiddenInput = document.querySelector(`input[name="${key}"][type="hidden"]`);
-          if (!hiddenInput) {
-            hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = key;
-            bookingForm.appendChild(hiddenInput);
-          }
-          hiddenInput.value = value;
-        }
-      });
-    }
-  });
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
