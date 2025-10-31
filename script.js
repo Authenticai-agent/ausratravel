@@ -143,6 +143,8 @@ const recalcPrice = () => {
   const guests = parseInt(document.getElementById('guests')?.value || '1', 10);
   const occupancy = document.getElementById('occupancy')?.value || 'double';
   const experience = document.getElementById('experience')?.value || '';
+  const extraBefore = parseInt(document.getElementById('extra-days-before')?.value || '0', 10) || 0;
+  const extraAfter = parseInt(document.getElementById('extra-days-after')?.value || '0', 10) || 0;
 
   if (!summary) return;
   const parts = datesVal.split(' to ');
@@ -156,17 +158,31 @@ const recalcPrice = () => {
   }
 
   const rate = pricePerDay[occupancy];
-  const total = rate * guests * nights;
+  const tripTotal = rate * guests * nights;
+  const extraTotal = rate * guests * (extraBefore + extraAfter); // Extra days at same rate (accommodation + meals)
+  const total = tripTotal + extraTotal;
+  const totalNights = nights + extraBefore + extraAfter;
+  
   const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
+  const tripFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tripTotal);
+  
+  let extraText = '';
+  if (extraBefore > 0 || extraAfter > 0) {
+    const extraFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(extraTotal);
+    extraText = `<div style="opacity:.9; font-size:.9rem; margin-top:.4rem;">Trip: ${tripFormatted} (${nights} nights) ${(extraBefore > 0 || extraAfter > 0) ? `+ Extra days: ${extraFormatted} (${extraBefore + extraAfter} nights)` : ''}</div>`;
+  }
+  
   summary.innerHTML = `
-    <div><strong>Estimate:</strong> ${formatted} · ${nights} night(s) · ${guests} guest(s) · ${occupancy} · ${experience}</div>
-    <div style="opacity:.8; font-size:.9rem;">Final pricing confirmed in email. Flights not included.</div>
+    <div><strong>Estimate:</strong> ${formatted} · ${totalNights} total night(s) · ${guests} guest(s) · ${occupancy}</div>
+    ${extraText}
+    <div style="opacity:.8; font-size:.9rem; margin-top:.4rem;">Final pricing confirmed in email. Extra days include accommodation & meals only. Flights not included.</div>
   `;
 };
 
-['guests', 'occupancy', 'experience'].forEach(id => {
+['guests', 'occupancy', 'experience', 'extra-days-before', 'extra-days-after'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', recalcPrice);
+  if (el) el.addEventListener('input', recalcPrice);
 });
 
 /* Submit form to Railway API that sends email via Resend and saves to Supabase */

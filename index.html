@@ -31,8 +31,8 @@
         <section class="hero" id="top">
             <div class="hero-media" role="img" aria-label="Mediterranean coast in the South of France"></div>
             <div class="container hero-content">
-                <h1>Authentic Experiences in South of France</h1>
-                <p class="subtitle">Small, intimate journeys (8–10 guests) through Provence—where art, wellness, and indulgence meet simplicity and peace.</p>
+                <h1>Authentic Local Experiences in Castellane Region</h1>
+                <p class="subtitle">Small, intimate journeys (8–10 guests) through the heart of Provence's Castellane region—where authentic local crafts, traditions, and natural beauty meet simplicity and peace.</p>
                 <div class="hero-cta">
                     <a class="btn btn-primary" href="#experiences">Explore Experiences</a>
                     <a class="btn btn-secondary" href="#tab-booking">Book Your Escape</a>
@@ -242,6 +242,10 @@
                                             <option value="Cheese & Wine">Cheese & Wine</option>
                                             <option value="Meditation & Mindfulness">Meditation & Mindfulness</option>
                                             <option value="Leave Me Alone">Leave Me Alone</option>
+                                            <option value="Perfume Making Grasse">Perfume Making in Grasse</option>
+                                            <option value="Olive Oil Workshop">Olive Oil Making Workshop</option>
+                                            <option value="Lavender Workshop">Lavender Workshop Experience</option>
+                                            <option value="Castellane Heritage">Castellane Heritage & Verdon Discovery</option>
                                             <option value="Custom">Custom</option>
                                         </select>
                                     </div>
@@ -251,8 +255,20 @@
                                             <input id="guests" name="guests" type="number" min="1" max="10" value="2" required>
                                         </div>
                                         <div>
-                                            <label for="dates">Preferred Dates</label>
+                                            <label for="dates">Preferred Dates (Trip Dates)</label>
                                             <input id="dates" name="dates" type="text" placeholder="Select date range" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row two">
+                                        <div>
+                                            <label for="extra-days-before">Extra Days Before Trip</label>
+                                            <input id="extra-days-before" name="extra_days_before" type="number" min="0" max="7" value="0" placeholder="0">
+                                            <small style="color: var(--muted); font-size: .85rem;">Add extra nights before your experience starts</small>
+                                        </div>
+                                        <div>
+                                            <label for="extra-days-after">Extra Days After Trip</label>
+                                            <input id="extra-days-after" name="extra_days_after" type="number" min="0" max="7" value="0" placeholder="0">
+                                            <small style="color: var(--muted); font-size: .85rem;">Add extra nights after your experience ends</small>
                                         </div>
                                     </div>
                                     <div class="form-row" id="price-summary" aria-live="polite"></div>
@@ -273,18 +289,17 @@
                         <div class="card-media media-art" aria-hidden="true"></div>
                         <div class="card-body">
                             <h3>Painting & Glass Art Experience</h3>
-                            <p>Discover the artist within alongside local artisans of Provence. Create your own glasswork, paint lavender fields, and enjoy slow mornings with wine-filled evenings.</p>
-                            <details class="details">
-                                <summary>What's Included</summary>
-                                <ul>
-                                    <li>Airport pickup & return (Nice, France)</li>
-                                    <li>Accommodation (discounted partner hotels available)</li>
-                                    <li>Almost unlimited food, snacks, and local wines</li>
-                                    <li>Daily painting & glass workshops</li>
-                                    <li>Excursions to villages and lavender fields (in season)</li>
-                                </ul>
-                                <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
-                            </details>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy to moderate (opt-out available)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🎨</span><strong>Activities:</strong> Daily painting & glass workshops with local artisans</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Almost unlimited local cuisine & regional wines</div>
+                            </div>
+                            <p class="card-description">Discover the artist within alongside authentic local artisans of Castellane. Create your own glasswork, paint lavender fields, and immerse in the region's artistic traditions.</p>
                             <a class="btn btn-primary" href="#tab-booking" data-experience="Painting & Glass Art">Book Painting & Glass</a>
                         </div>
                     </article>
@@ -293,18 +308,17 @@
                         <div class="card-media media-yoga" aria-hidden="true"></div>
                         <div class="card-body">
                             <h3>Yoga with Goats Retreat</h3>
-                            <p>Rebalance your mind and body among the calm hills of Provence with joyful goat yoga, mindfulness, and nourishing vegetarian cuisine.</p>
-                            <details class="details">
-                                <summary>What's Included</summary>
-                                <ul>
-                                    <li>Airport pickup & return (Nice, France)</li>
-                                    <li>Accommodation (discounted hotels available)</li>
-                                    <li>Daily yoga sessions (including goat yoga)</li>
-                                    <li>Mindfulness and nature walks</li>
-                                    <li>Locally sourced vegetarian meals, snacks, and limited wine</li>
-                                </ul>
-                                <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
-                            </details>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy (gentle nature walks)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🧘</span><strong>Activities:</strong> Daily yoga sessions (including goat yoga), mindfulness, nature walks</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Locally sourced vegetarian meals, snacks, limited wine</div>
+                            </div>
+                            <p class="card-description">Rebalance your mind and body in the calm hills of Castellane. Enjoy joyful goat yoga, mindfulness sessions, and nourishing vegetarian cuisine.</p>
                             <a class="btn btn-primary" href="#tab-booking" data-experience="Yoga with Goats">Book Yoga with Goats</a>
                         </div>
                     </article>
@@ -313,18 +327,17 @@
                         <div class="card-media media-wine" aria-hidden="true"></div>
                         <div class="card-body">
                             <h3>Cheese & Wine Experience</h3>
-                            <p>Savor local cheese-making, vineyard tours, and elegant picnics under the Provençal sun—guided by artisan producers and chefs.</p>
-                            <details class="details">
-                                <summary>What's Included</summary>
-                                <ul>
-                                    <li>Airport pickup & return (Nice, France)</li>
-                                    <li>Cheese & wine tastings daily</li>
-                                    <li>Local vineyard and market tours</li>
-                                    <li>Lavish countryside meals & picnics</li>
-                                    <li>Accommodation (discounted hotels available)</li>
-                                </ul>
-                                <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
-                            </details>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy to moderate (market & vineyard tours)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🧀</span><strong>Activities:</strong> Cheese & wine tastings daily, vineyard tours, market visits, countryside picnics</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Lavish countryside meals, artisan cheese tastings, premium local wines</div>
+                            </div>
+                            <p class="card-description">Savor authentic cheese-making and vineyard tours in Castellane. Enjoy elegant picnics under the Provençal sun, guided by local artisan producers and chefs.</p>
                             <a class="btn btn-primary" href="#tab-booking" data-experience="Cheese & Wine">Book Cheese & Wine</a>
                         </div>
                     </article>
@@ -333,18 +346,17 @@
                         <div class="card-media media-meditation" aria-hidden="true"></div>
                         <div class="card-body">
                             <h3>Meditation & Mindfulness Retreat</h3>
-                            <p>Reconnect with yourself in the silence of nature. Daily meditations, reflective journaling, and gentle movement to recharge deeply.</p>
-                            <details class="details">
-                                <summary>What's Included</summary>
-                                <ul>
-                                    <li>Airport pickup & return (Nice, France)</li>
-                                    <li>Guided meditation sessions</li>
-                                    <li>Mindful meals & tea ceremonies</li>
-                                    <li>Optional creative workshops (painting, writing)</li>
-                                    <li>Accommodation (discounted hotels available)</li>
-                                </ul>
-                                <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
-                            </details>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy (gentle movement, nature connection)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🧘</span><strong>Activities:</strong> Guided meditation sessions, mindful meals, tea ceremonies, optional creative workshops</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Mindful meals, tea ceremonies, local snacks</div>
+                            </div>
+                            <p class="card-description">Reconnect with yourself in the peaceful silence of Castellane's nature. Daily meditations, reflective journaling, and gentle movement to recharge deeply.</p>
                             <a class="btn btn-primary" href="#tab-booking" data-experience="Meditation & Mindfulness">Book Meditation</a>
                         </div>
                     </article>
@@ -353,19 +365,95 @@
                         <div class="card-media media-solo" aria-hidden="true"></div>
                         <div class="card-body">
                             <h3>The "Leave Me Alone" Experience</h3>
-                            <p>Escape the noise. Pure solitude in nature with optional silent mornings, meals delivered to your private terrace, and zero scheduled activities unless you choose.</p>
-                            <details class="details">
-                                <summary>What's Included</summary>
-                                <ul>
-                                    <li>Airport pickup & return (Nice, France)</li>
-                                    <li>Private accommodation options</li>
-                                    <li>Meals & local snacks delivered daily</li>
-                                    <li>Nature walks and optional meditation</li>
-                                    <li>Access to concierge for local experiences (if desired)</li>
-                                </ul>
-                                <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
-                            </details>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests (or private)</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Optional (nature walks if desired)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Private options in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🌿</span><strong>Activities:</strong> Zero scheduled activities (all optional), meals delivered, concierge access</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Meals & local snacks delivered daily</div>
+                            </div>
+                            <p class="card-description">Escape the noise in the serene Castellane region. Pure solitude with optional silent mornings, meals delivered to your private terrace—your perfect escape.</p>
                             <a class="btn btn-primary" href="#tab-booking" data-experience="Leave Me Alone">Book Solitude</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-media media-perfume" aria-hidden="true"></div>
+                        <div class="card-body">
+                            <h3>Perfume Making in Grasse</h3>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Grasse (Perfume Capital)</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy (workshops & tours)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🌸</span><strong>Activities:</strong> Perfume-making workshop in Grasse, historic perfumery visits, create custom fragrance</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Curated Provençal meals & regional wines</div>
+                            </div>
+                            <p class="card-description">Immerse yourself in the authentic art of French perfumery. Learn from master perfumers in Grasse and create your own signature scent in the Castellane region.</p>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Perfume Making Grasse">Book Perfume Experience</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-media media-olive" aria-hidden="true"></div>
+                        <div class="card-body">
+                            <h3>Olive Oil Making Workshop</h3>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy (mill visits & groves)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🫒</span><strong>Activities:</strong> Olive oil workshop, traditional mill visits, hands-on pressing (seasonal), premium oil tastings</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Local specialties featuring regional olive oils & wines</div>
+                            </div>
+                            <p class="card-description">Discover authentic olive oil traditions in Castellane. Learn pressing techniques from Provençal artisans and taste award-winning oils straight from local mills.</p>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Olive Oil Workshop">Book Olive Oil Experience</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-media media-lavender" aria-hidden="true"></div>
+                        <div class="card-body">
+                            <h3>Lavender Workshop Experience</h3>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Provence</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">🌿</span><strong>Available:</strong> Lavender season (June–August)</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy to moderate (field visits)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">💜</span><strong>Activities:</strong> Lavender harvest, distillation workshop, create products (soaps, sachets, oils), guided field tours</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Regional cuisine with lavender-infused dishes & local wines</div>
+                            </div>
+                            <p class="card-description">Connect with iconic lavender fields of Castellane. Harvest, distill essential oils with local experts, and create authentic products like true Provençal artisans.</p>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Lavender Workshop">Book Lavender Experience</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-media media-heritage" aria-hidden="true"></div>
+                        <div class="card-body">
+                            <h3>Castellane Heritage & Verdon Discovery</h3>
+                            <div class="trip-details">
+                                <div class="detail-item"><span class="detail-icon">📍</span><strong>Region:</strong> Castellane, Verdon Gorge</div>
+                                <div class="detail-item"><span class="detail-icon">✈️</span><strong>Pick up/Drop off:</strong> Nice Airport</div>
+                                <div class="detail-item"><span class="detail-icon">📅</span><strong>Duration:</strong> 4 days, 4 nights</div>
+                                <div class="detail-item"><span class="detail-icon">👥</span><strong>Group size:</strong> 8–10 guests</div>
+                                <div class="detail-item"><span class="detail-icon">🚶</span><strong>Walking:</strong> Easy to moderate (village tours, gorge excursions)</div>
+                                <div class="detail-item"><span class="detail-icon">🏨</span><strong>Accommodation:</strong> Partner hotels in Castellane region</div>
+                                <div class="detail-item"><span class="detail-icon">🏛️</span><strong>Activities:</strong> Historic village tours, Verdon Gorge excursions, Lac de Castillon, Musée de la Résistance, medieval architecture walks</div>
+                                <div class="detail-item"><span class="detail-icon">🍷</span><strong>Food & Wine:</strong> Local cuisine & wine tastings</div>
+                            </div>
+                            <p class="card-description">Explore the rich history and natural wonders of Castellane. Visit historic sites, discover the Verdon Gorge, learn about local resistance heritage, and connect with authentic stories of this remarkable region.</p>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Castellane Heritage">Book Heritage Experience</a>
                         </div>
                     </article>
                 </div>
