@@ -876,6 +876,104 @@ input:focus, select:focus, textarea:focus { outline: 2px solid #2f7bdc; outline-
   background: #2f7bdc30 !important;
   border-color: #2f7bdc50 !important;
 }
+/* Custom Request Form Modal */
+.form-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.form-modal-content {
+  background: linear-gradient(180deg, #12161c, #0f141a);
+  border: 1px solid #ffffff12;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid #ffffff12;
+}
+
+.form-modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #eaf3ff;
+}
+
+.form-modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.form-modal-close:hover {
+  background: #ffffff10;
+  color: var(--text);
+}
+
+.custom-request-form {
+  padding: 1.75rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.custom-request-form .form-row:last-of-type {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.custom-request-form .form-row:last-of-type button[type="submit"] {
+  flex: 1;
+}
+
+.custom-request-form .form-row:last-of-type button[type="button"] {
+  flex: 0 0 auto;
+}
+
+.required {
+  color: #ff6b6b;
+  margin-left: 0.25rem;
+}
+
 .flatpickr-day.disabled {
   color: #6b7788 !important;
   opacity: .4 !important;

@@ -644,18 +644,18 @@
             <div class="container">
                 <h3>Need Something Custom?</h3>
                 <p>Extend your stay or request a tailor-made experience—private trip to Nice, spa day, or a culinary adventure. Perfect for private groups (8–10 guests).</p>
-                <a class="btn btn-secondary" href="#contact">Contact Us for Custom Dates</a>
+                <button class="btn btn-secondary" id="show-custom-form">Request Custom Dates & Experience</button>
             </div>
         </section>
 
         <section class="contact" id="contact">
             <div class="container contact-inner">
                 <div>
-                    <h3>Let’s Connect</h3>
-                    <p>Questions about our experiences or private groups? We’re here to help.</p>
+                    <h3>Let's Connect</h3>
+                    <p>Questions about our experiences or private groups? We're here to help.</p>
                     <ul class="contact-list">
                         <li><strong>Call / Text:</strong> <a href="tel:+1-703-375-9548">+1 (703) 375-9548</a></li>
-                        <li><strong>Email:</strong> <a href="mailto:hello@authenticfrance.example">hello@authenticfrance.example</a></li>
+                        <li><strong>Email:</strong> <a href="mailto:jura@authenticai.ai">jura@authenticai.ai</a></li>
                     </ul>
                 </div>
                 <div class="contact-cta">
@@ -663,6 +663,35 @@
                 </div>
             </div>
         </section>
+
+        <!-- Custom Request Form -->
+        <div id="custom-form-modal" class="form-modal" style="display: none;">
+            <div class="form-modal-content">
+                <div class="form-modal-header">
+                    <h3>Request Custom Dates & Experience</h3>
+                    <button class="form-modal-close" id="close-custom-form" aria-label="Close form">&times;</button>
+                </div>
+                <form id="custom-request-form" class="custom-request-form">
+                    <div class="form-row">
+                        <label for="custom-name">Full Name <span class="required">*</span></label>
+                        <input id="custom-name" name="name" type="text" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="custom-email">Email <span class="required">*</span></label>
+                        <input id="custom-email" name="email" type="email" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="custom-notes">Tell us about your custom request <span class="required">*</span></label>
+                        <textarea id="custom-notes" name="notes" rows="6" placeholder="Describe your desired dates, experience type, group size, special requirements, or any other details..." required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-primary" type="submit">Submit Request</button>
+                        <button class="btn btn-secondary" type="button" id="cancel-custom-form">Cancel</button>
+                    </div>
+                    <div class="form-row" id="custom-form-message" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <footer class="site-footer">

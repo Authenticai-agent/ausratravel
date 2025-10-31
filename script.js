@@ -454,6 +454,136 @@ if (proceedBtn) {
 }
 
 
+// Custom Request Form Modal
+const customFormModal = document.getElementById('custom-form-modal');
+const showCustomFormBtn = document.getElementById('show-custom-form');
+const closeCustomFormBtn = document.getElementById('close-custom-form');
+const cancelCustomFormBtn = document.getElementById('cancel-custom-form');
+const customRequestForm = document.getElementById('custom-request-form');
+const customFormMessage = document.getElementById('custom-form-message');
+
+function showCustomForm() {
+  if (customFormModal) {
+    customFormModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    // Focus first input
+    setTimeout(() => {
+      const firstInput = customRequestForm?.querySelector('input');
+      if (firstInput) firstInput.focus();
+    }, 100);
+  }
+}
+
+function hideCustomForm() {
+  if (customFormModal) {
+    customFormModal.style.display = 'none';
+    document.body.style.overflow = '';
+    customRequestForm?.reset();
+    if (customFormMessage) {
+      customFormMessage.textContent = '';
+      customFormMessage.className = '';
+    }
+  }
+}
+
+if (showCustomFormBtn) {
+  showCustomFormBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    showCustomForm();
+  });
+}
+
+if (closeCustomFormBtn) {
+  closeCustomFormBtn.addEventListener('click', hideCustomForm);
+}
+
+if (cancelCustomFormBtn) {
+  cancelCustomFormBtn.addEventListener('click', hideCustomForm);
+}
+
+// Close modal when clicking outside
+if (customFormModal) {
+  customFormModal.addEventListener('click', (e) => {
+    if (e.target === customFormModal) {
+      hideCustomForm();
+    }
+  });
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && customFormModal && customFormModal.style.display !== 'none') {
+    hideCustomForm();
+  }
+});
+
+// Handle custom request form submission
+if (customRequestForm) {
+  customRequestForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const submitBtn = customRequestForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
+
+    if (customFormMessage) {
+      customFormMessage.textContent = '';
+      customFormMessage.className = '';
+    }
+
+    const formData = new FormData(customRequestForm);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      notes: formData.get('notes')
+    };
+
+    try {
+      const apiUrl = window.API_BASE_URL || '';
+      const response = await fetch(`${apiUrl}/api/custom-request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit request');
+      }
+
+      if (customFormMessage) {
+        customFormMessage.textContent = 'Thank you! Your custom request has been submitted. We\'ll get back to you within 24–48 hours.';
+        customFormMessage.className = 'form-message success';
+      }
+
+      customRequestForm.reset();
+      
+      // Auto-close after 3 seconds
+      setTimeout(() => {
+        hideCustomForm();
+      }, 3000);
+
+    } catch (error) {
+      console.error('Custom request error:', error);
+      if (customFormMessage) {
+        customFormMessage.textContent = error.message || 'Something went wrong. Please try again or contact us directly.';
+        customFormMessage.className = 'form-message error';
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
   recalcPrice();

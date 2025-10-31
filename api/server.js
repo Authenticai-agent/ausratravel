@@ -185,6 +185,84 @@ app.post('/api/booking', async (req, res) => {
   }
 });
 
+// Submit custom request (feedback/contact form)
+app.post('/api/custom-request', async (req, res) => {
+  try {
+    const { name, email, notes } = req.body;
+    
+    if (!name || !email || !notes) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Save to Supabase
+    let requestId = null;
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('custom_requests')
+        .insert({
+          name,
+          email,
+          notes,
+          status: 'new'
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        // Continue even if DB fails
+      } else {
+        requestId = data?.id;
+      }
+    }
+    
+    // Send email via Resend
+    if (resend) {
+      await resend.emails.send({
+        from: 'Authentic France <noreply@authenticai.ai>',
+        to: TO_EMAIL,
+        replyTo: email,
+        subject: `Custom Request: ${name}`,
+        html: `
+          <h2>New Custom Request</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Request Details:</strong></p>
+          <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin: 1rem 0; white-space: pre-wrap;">${notes}</div>
+          ${requestId ? `<p><strong>Request ID:</strong> ${requestId}</p>` : ''}
+          <hr>
+          <p><em>Reply to this email to respond directly to ${name}.</em></p>
+        `
+      });
+      
+      // Confirmation email to customer
+      await resend.emails.send({
+        from: 'Authentic France <noreply@authenticai.ai>',
+        to: email,
+        subject: 'Custom Request Received - Authentic France',
+        html: `
+          <h2>Thank you, ${name}!</h2>
+          <p>We've received your custom request. Our team will review it and get back to you within <strong>24–48 hours</strong>.</p>
+          <p><strong>Your Request:</strong></p>
+          <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin: 1rem 0; white-space: pre-wrap;">${notes}</div>
+          <p>If you have any urgent questions, please call us at <strong>+1 (703) 375-9548</strong> or reply to this email.</p>
+          <hr>
+          <p><small>Authentic Experiences in South of France</small></p>
+        `
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Custom request submitted successfully',
+      requestId 
+    });
+  } catch (err) {
+    console.error('Custom request error:', err);
+    res.status(500).json({ error: 'Failed to process custom request' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Supabase: ${supabase ? 'connected' : 'not configured'}`);
