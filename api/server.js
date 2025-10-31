@@ -23,6 +23,23 @@ const supabase = SUPABASE_URL && SUPABASE_KEY
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY) : null;
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Authentic France API',
+    version: '1.0.1',
+    endpoints: {
+      health: '/health',
+      stripeConfig: '/api/stripe-config',
+      createPaymentIntent: '/api/create-payment-intent',
+      booking: '/api/booking',
+      availability: '/api/availability',
+      customRequest: '/api/custom-request',
+      reviews: '/api/reviews'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
