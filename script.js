@@ -1,9 +1,59 @@
+/* Tab functionality */
+document.addEventListener('DOMContentLoaded', () => {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      
+      // Remove active class from all buttons and contents
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked button and corresponding content
+      btn.classList.add('active');
+      const targetContent = document.getElementById(`tab-${tabId}`);
+      if (targetContent) targetContent.classList.add('active');
+    });
+  });
+
+  // Handle hash navigation to tabs
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#tab-')) {
+    const tabId = hash.replace('#tab-', '');
+    const btn = document.querySelector(`[data-tab="${tabId}"]`);
+    if (btn) {
+      btn.click();
+      setTimeout(() => {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
+});
+
 /* Smooth scrolling for on-page anchors */
 document.addEventListener('click', function (e) {
   const target = e.target.closest('a[href^="#"]');
   if (!target) return;
   const href = target.getAttribute('href');
   if (href.length <= 1) return;
+  
+  // Handle tab navigation
+  if (href.startsWith('#tab-')) {
+    const tabId = href.replace('#tab-', '');
+    const btn = document.querySelector(`[data-tab="${tabId}"]`);
+    if (btn) {
+      e.preventDefault();
+      btn.click();
+      setTimeout(() => {
+        const el = document.querySelector(href);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+      return;
+    }
+  }
+  
   const el = document.querySelector(href);
   if (!el) return;
   e.preventDefault();

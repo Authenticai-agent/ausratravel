@@ -22,7 +22,7 @@
                 <a href="#experiences">Experiences</a>
                 <a href="#whats-included">What's Included</a>
                 <a href="#contact">Contact</a>
-                <a class="btn btn-primary small" href="#book">Book Now</a>
+                <a class="btn btn-primary small" href="#tab-booking">Book Now</a>
             </nav>
         </div>
     </header>
@@ -35,7 +35,7 @@
                 <p class="subtitle">Small, intimate journeys (8–10 guests) through Provence—where art, wellness, and indulgence meet simplicity and peace.</p>
                 <div class="hero-cta">
                     <a class="btn btn-primary" href="#experiences">Explore Experiences</a>
-                    <a class="btn btn-secondary" href="#book">Book Your Escape</a>
+                    <a class="btn btn-secondary" href="#tab-booking">Book Your Escape</a>
                 </div>
                 <p class="micro-ref">Inspired by proven tour formats like <a href="https://tripusafrance.com/south-france-tour/" target="_blank" rel="noopener noreferrer">TripUSAFrance — South France Tour</a>.</p>
             </div>
@@ -53,66 +53,220 @@
         <section class="experiences" id="experiences">
             <div class="container">
                 <header class="section-head">
-                    <div class="pricing-card">
-                        <div class="pricing-card-header">
-                            <h3>Transparent Pricing</h3>
-                            <span class="badge">Final Price</span>
-                        </div>
-                        <div class="pricing-card-body">
-                            <div class="pricing-main">
-                                <div class="pricing-item">
-                                    <span class="pricing-label">Double occupancy</span>
-                                    <span class="pricing-value">$700/day/person</span>
-                                </div>
-                                <div class="pricing-item">
-                                    <span class="pricing-label">Single occupancy</span>
-                                    <span class="pricing-value">$1,200/day/person</span>
-                                </div>
-                                <div class="pricing-item total">
-                                    <span class="pricing-label">4-day package</span>
-                                    <span class="pricing-value">$2,800 double | $4,800 single</span>
-                                </div>
-                            </div>
-                            <p class="pricing-note">No additional fees or surprise charges beyond anything clearly listed as "Not Included."</p>
-                        </div>
-                        <div class="pricing-card-included">
-                            <div class="included-header">
-                                <h4>What's Always Included</h4>
-                                <p class="included-subtitle">No gimmicks, no hidden fees—just deeply personal experiences.</p>
-                            </div>
-                            <ul class="included-list">
-                                <li>Airport pickup & return (Nice, France)</li>
-                                <li>Curated meals, snacks, and regional wines (per experience)</li>
-                                <li>Local artisans, instructors, and guides</li>
-                                <li>Small groups: 8–10 guests</li>
-                                <li>Flexible pacing & opt-in activities</li>
-                                <li>Discounted partner accommodations</li>
-                            </ul>
-                            <p class="included-exclusion">Not included: Visa, flights, insurance, gifts, personal expenses.</p>
-                        </div>
-                        <div class="pricing-card-footer">
-                            <details class="cancellation-details">
-                                <summary>Booking & Cancellation Policy</summary>
-                                <div class="cancellation-content">
-                                    <div class="policy-item">
-                                        <strong>Deposit:</strong> $299 secures your spot (fully refundable if cancelled 30+ days before trip start)
-                                    </div>
-                                    <div class="policy-item">
-                                        <strong>Final payment:</strong> Remaining balance due 7 days before arrival
-                                    </div>
-                                    <div class="policy-item">
-                                        <strong>Cancellation 30+ days:</strong> 100% deposit refunded, or 80% of fully paid trips (20% covers preparation costs)
-                                    </div>
-                                    <div class="policy-item">
-                                        <strong>Cancellation within 30 days:</strong> 50% of paid amount refunded
-                                    </div>
-                                </div>
-                            </details>
-                        </div>
-                    </div>
                     <h2>Choose Your Experience</h2>
                     <p>Four-day escapes crafted to nourish your senses, creativity, and soul.</p>
                 </header>
+
+                <div class="info-tabs">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="pricing">Transparent Pricing</button>
+                        <button class="tab-btn" data-tab="accommodation">Accommodation</button>
+                        <button class="tab-btn" data-tab="food">Food</button>
+                        <button class="tab-btn" data-tab="daily-plans">Daily Plans</button>
+                        <button class="tab-btn" data-tab="booking">Booking</button>
+                    </div>
+
+                    <div class="tab-content active" id="tab-pricing">
+                        <div class="pricing-card">
+                            <div class="pricing-card-header">
+                                <h3>Transparent Pricing</h3>
+                                <span class="badge">Final Price</span>
+                            </div>
+                            <div class="pricing-card-body">
+                                <div class="pricing-main">
+                                    <div class="pricing-item">
+                                        <span class="pricing-label">Double occupancy</span>
+                                        <span class="pricing-value">$700/day/person</span>
+                                    </div>
+                                    <div class="pricing-item">
+                                        <span class="pricing-label">Single occupancy</span>
+                                        <span class="pricing-value">$1,200/day/person</span>
+                                    </div>
+                                    <div class="pricing-item total">
+                                        <span class="pricing-label">4-day package</span>
+                                        <span class="pricing-value">$2,800 double | $4,800 single</span>
+                                    </div>
+                                </div>
+                                <p class="pricing-note">No additional fees or surprise charges beyond anything clearly listed as "Not Included."</p>
+                            </div>
+                            <div class="pricing-card-included">
+                                <div class="included-header">
+                                    <h4>What's Always Included</h4>
+                                    <p class="included-subtitle">No gimmicks, no hidden fees—just deeply personal experiences.</p>
+                                </div>
+                                <ul class="included-list">
+                                    <li>Airport pickup & return (Nice, France)</li>
+                                    <li>Curated meals, snacks, and regional wines (per experience)</li>
+                                    <li>Local artisans, instructors, and guides</li>
+                                    <li>Small groups: 8–10 guests</li>
+                                    <li>Flexible pacing & opt-in activities</li>
+                                    <li>Discounted partner accommodations</li>
+                                </ul>
+                                <p class="included-exclusion">Not included: Visa, flights, insurance, gifts, personal expenses.</p>
+                            </div>
+                            <div class="pricing-card-footer">
+                                <details class="cancellation-details">
+                                    <summary>Booking & Cancellation Policy</summary>
+                                    <div class="cancellation-content">
+                                        <div class="policy-item">
+                                            <strong>Deposit:</strong> $299 secures your spot (fully refundable if cancelled 30+ days before trip start)
+                                        </div>
+                                        <div class="policy-item">
+                                            <strong>Final payment:</strong> Remaining balance due 7 days before arrival
+                                        </div>
+                                        <div class="policy-item">
+                                            <strong>Cancellation 30+ days:</strong> 100% deposit refunded, or 80% of fully paid trips (20% covers preparation costs)
+                                        </div>
+                                        <div class="policy-item">
+                                            <strong>Cancellation within 30 days:</strong> 50% of paid amount refunded
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-accommodation">
+                        <div class="tab-card">
+                            <div class="tab-card-media">
+                                <img src="/assets/accommodation-placeholder.jpg" alt="Accommodation in Provence" onerror="this.src='https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop'">
+                            </div>
+                            <div class="tab-card-content">
+                                <h3>Your Home Away From Home</h3>
+                                <p>Experience authentic Provençal hospitality in carefully selected accommodations that reflect the region's charm and character.</p>
+                                <div class="feature-grid">
+                                    <div class="feature-item">
+                                        <strong>Partner Hotels</strong>
+                                        <p>Discounted rates at handpicked hotels with sea views, private balconies, and authentic French character.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Location</strong>
+                                        <p>Strategic locations in vibrant beach towns, steps from restaurants, cafes, and Mediterranean beaches.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Amenities</strong>
+                                        <p>All rooms feature AC, WiFi, mini-fridge, safe, and breathtaking sea views from private balconies.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Flexibility</strong>
+                                        <p>Choose between double or single occupancy. Extended stays available for those who want to explore more.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-food">
+                        <div class="tab-card">
+                            <div class="tab-card-media">
+                                <img src="/assets/food-placeholder.jpg" alt="Provençal cuisine" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1600&auto=format&fit=crop'">
+                            </div>
+                            <div class="tab-card-content">
+                                <h3>Culinary Delights</h3>
+                                <p>Indulge in the finest Provençal cuisine, from market-fresh ingredients to regional wines and artisan cheeses.</p>
+                                <div class="feature-grid">
+                                    <div class="feature-item">
+                                        <strong>Curated Meals</strong>
+                                        <p>Almost unlimited food, snacks, and regional wines included with your experience. Fresh, local, and authentic.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Market Tours</strong>
+                                        <p>Explore local markets, meet producers, and select ingredients for private cooking sessions or picnics.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Wine Pairings</strong>
+                                        <p>Daily wine tastings from local vineyards. Learn about regional varietals and perfect pairings.</p>
+                                    </div>
+                                    <div class="feature-item">
+                                        <strong>Dietary Needs</strong>
+                                        <p>We accommodate vegetarian, vegan, and special dietary requirements. Just let us know in advance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-daily-plans">
+                        <div class="tab-card">
+                            <div class="tab-card-media">
+                                <img src="/assets/activities-placeholder.jpg" alt="Daily activities in Provence" onerror="this.src='https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop'">
+                            </div>
+                            <div class="tab-card-content">
+                                <h3>Your Perfect Day</h3>
+                                <p>Each experience is thoughtfully designed with flexibility built in—join group activities or enjoy your own pace.</p>
+                                <div class="daily-plan">
+                                    <div class="plan-day">
+                                        <h4>Day 1: Arrival & Welcome</h4>
+                                        <p>Airport pickup, hotel check-in, welcome dinner with your small group. Settle into the Provençal rhythm.</p>
+                                    </div>
+                                    <div class="plan-day">
+                                        <h4>Day 2-3: Immersive Experiences</h4>
+                                        <p>Morning workshops (art, yoga, meditation, or free time). Afternoon excursions to villages, markets, or nature. Evening wine & cuisine.</p>
+                                    </div>
+                                    <div class="plan-day">
+                                        <h4>Day 4: Farewell & Departure</h4>
+                                        <p>Final morning activity, farewell lunch, and transfer to Nice airport. Depart with memories and new skills.</p>
+                                    </div>
+                                </div>
+                                <p class="plan-note"><strong>Flexible:</strong> All activities are opt-in. Enjoy solitude, join group adventures, or mix both—your journey, your way.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-booking">
+                        <div class="tab-card">
+                            <div class="tab-card-content">
+                                <h3>Book Your Escape</h3>
+                                <p>Tell us your preferred dates and experience. We'll confirm availability within 24–48 hours.</p>
+                                <form class="booking-form" netlify>
+                                    <div class="form-row">
+                                        <label for="name">Full Name</label>
+                                        <input id="name" name="name" type="text" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="email">Email</label>
+                                        <input id="email" name="email" type="email" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="occupancy">Occupancy</label>
+                                        <select id="occupancy" name="occupancy" required>
+                                            <option value="double">Double (per person)</option>
+                                            <option value="single">Single</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="experience">Experience</label>
+                                        <select id="experience" name="experience" required>
+                                            <option value="Painting & Glass Art">Painting & Glass Art</option>
+                                            <option value="Yoga with Goats">Yoga with Goats</option>
+                                            <option value="Cheese & Wine">Cheese & Wine</option>
+                                            <option value="Meditation & Mindfulness">Meditation & Mindfulness</option>
+                                            <option value="Leave Me Alone">Leave Me Alone</option>
+                                            <option value="Custom">Custom</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row two">
+                                        <div>
+                                            <label for="guests">Guests</label>
+                                            <input id="guests" name="guests" type="number" min="1" max="10" value="2" required>
+                                        </div>
+                                        <div>
+                                            <label for="dates">Preferred Dates</label>
+                                            <input id="dates" name="dates" type="text" placeholder="Select date range" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-row" id="price-summary" aria-live="polite"></div>
+                                    <div class="form-row">
+                                        <label for="notes">Notes</label>
+                                        <textarea id="notes" name="notes" rows="4" placeholder="Dietary needs, room type (single/double), questions…"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit" id="submit-btn">Request Availability</button>
+                                    <div class="form-row" id="form-message" role="status" aria-live="polite"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="cards">
                     <article class="card">
@@ -131,7 +285,7 @@
                                 </ul>
                                 <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
                             </details>
-                            <a class="btn btn-primary" href="#book" data-experience="Painting & Glass Art">Book Painting & Glass</a>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Painting & Glass Art">Book Painting & Glass</a>
                         </div>
                     </article>
 
@@ -151,7 +305,7 @@
                                 </ul>
                                 <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
                             </details>
-                            <a class="btn btn-primary" href="#book" data-experience="Yoga with Goats">Book Yoga with Goats</a>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Yoga with Goats">Book Yoga with Goats</a>
                         </div>
                     </article>
 
@@ -171,7 +325,7 @@
                                 </ul>
                                 <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
                             </details>
-                            <a class="btn btn-primary" href="#book" data-experience="Cheese & Wine">Book Cheese & Wine</a>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Cheese & Wine">Book Cheese & Wine</a>
                         </div>
                     </article>
 
@@ -191,7 +345,7 @@
                                 </ul>
                                 <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
                             </details>
-                            <a class="btn btn-primary" href="#book" data-experience="Meditation & Mindfulness">Book Meditation</a>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Meditation & Mindfulness">Book Meditation</a>
                         </div>
                     </article>
 
@@ -211,7 +365,7 @@
                                 </ul>
                                 <p class="not-included"><strong>Not Included:</strong> Visa, flights, insurance, gifts, personal expenses</p>
                             </details>
-                            <a class="btn btn-primary" href="#book" data-experience="Leave Me Alone">Book Solitude</a>
+                            <a class="btn btn-primary" href="#tab-booking" data-experience="Leave Me Alone">Book Solitude</a>
                         </div>
                     </article>
                 </div>
@@ -223,60 +377,6 @@
                 <h3>Need Something Custom?</h3>
                 <p>Extend your stay or request a tailor-made experience—private trip to Nice, spa day, or a culinary adventure. Perfect for private groups (8–10 guests).</p>
                 <a class="btn btn-secondary" href="#contact">Contact Us for Custom Dates</a>
-            </div>
-        </section>
-
-        <section class="booking" id="book">
-            <div class="container">
-                <header class="section-head">
-                    <h2>Book Your Escape</h2>
-                    <p>Tell us your preferred dates and experience. We’ll confirm availability within 24–48 hours.</p>
-                </header>
-                <form class="booking-form" netlify>
-                    <div class="form-row">
-                        <label for="name">Full Name</label>
-                        <input id="name" name="name" type="text" required>
-                    </div>
-                    <div class="form-row">
-                        <label for="email">Email</label>
-                        <input id="email" name="email" type="email" required>
-                    </div>
-                    <div class="form-row">
-                        <label for="occupancy">Occupancy</label>
-                        <select id="occupancy" name="occupancy" required>
-                            <option value="double">Double (per person)</option>
-                            <option value="single">Single</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <label for="experience">Experience</label>
-                        <select id="experience" name="experience" required>
-                            <option value="Painting & Glass Art">Painting & Glass Art</option>
-                            <option value="Yoga with Goats">Yoga with Goats</option>
-                            <option value="Cheese & Wine">Cheese & Wine</option>
-                            <option value="Meditation & Mindfulness">Meditation & Mindfulness</option>
-                            <option value="Leave Me Alone">Leave Me Alone</option>
-                            <option value="Custom">Custom</option>
-                        </select>
-                    </div>
-                    <div class="form-row two">
-                        <div>
-                            <label for="guests">Guests</label>
-                            <input id="guests" name="guests" type="number" min="1" max="10" value="2" required>
-                        </div>
-                        <div>
-                            <label for="dates">Preferred Dates</label>
-                            <input id="dates" name="dates" type="text" placeholder="Select date range" autocomplete="off" required>
-                        </div>
-                    </div>
-                    <div class="form-row" id="price-summary" aria-live="polite"></div>
-                    <div class="form-row">
-                        <label for="notes">Notes</label>
-                        <textarea id="notes" name="notes" rows="4" placeholder="Dietary needs, room type (single/double), questions…"></textarea>
-                    </div>
-                    <button class="btn btn-primary" type="submit" id="submit-btn">Request Availability</button>
-                    <div class="form-row" id="form-message" role="status" aria-live="polite"></div>
-                </form>
             </div>
         </section>
 
@@ -292,7 +392,7 @@
                     <p class="micro-ref">Modeled after successful formats like <a href="https://tripusafrance.com/south-france-tour/" target="_blank" rel="noopener noreferrer">TripUSAFrance — South France Tour</a>.</p>
                 </div>
                 <div class="contact-cta">
-                    <a class="btn btn-secondary" href="#book">Start Planning</a>
+                    <a class="btn btn-secondary" href="#tab-booking">Start Planning</a>
                 </div>
             </div>
         </section>
@@ -307,7 +407,7 @@
             <nav class="footer-nav">
                 <a href="#experiences">Experiences</a>
                 <a href="#custom">Custom</a>
-                <a href="#book">Book</a>
+                <a href="#tab-booking">Book</a>
                 <a href="#contact">Contact</a>
             </nav>
             <div class="copy">© <span id="year"></span> Authentic France. All rights reserved.</div>
