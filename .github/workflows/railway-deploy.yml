@@ -28,10 +28,6 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Create deployment archive
-        run: |
-          tar -czf deploy.tar.gz .
-      
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
