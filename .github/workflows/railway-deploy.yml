@@ -39,9 +39,7 @@ jobs:
             exit 1
           fi
           
-          # Authenticate with Railway
-          echo "$RAILWAY_TOKEN" | railway login --browserless
-          
+          # Railway CLI automatically uses RAILWAY_TOKEN environment variable
           # Set project context if PROJECT_ID is provided
           if [ -n "$RAILWAY_PROJECT_ID" ]; then
             # Create .railway directory structure for Railway CLI
@@ -49,7 +47,7 @@ jobs:
             echo "{\"project\":{\"id\":\"$RAILWAY_PROJECT_ID\"},\"environment\":{\"id\":null,\"name\":\"production\"},\"service\":{\"id\":null,\"name\":\"ausratravel\"}}" > .railway/project.json
           fi
           
-          # Deploy to Railway
+          # Deploy to Railway (CLI uses RAILWAY_TOKEN automatically)
           railway up --service ausratravel --detach
 
 
