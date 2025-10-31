@@ -143,32 +143,55 @@ body {
 
 /* Tabs */
 .info-tabs {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 .tabs-nav {
   display: flex;
-  gap: .5rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 0.25rem;
   border-bottom: 2px solid #ffffff15;
   margin-bottom: 2rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
+}
+
+@media (max-width: 1200px) {
+  .tabs-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tab-btn {
+    flex: 0 1 auto;
+    min-width: fit-content;
+  }
 }
 
 .tab-btn {
-  padding: .85rem 1.2rem;
+  padding: .85rem 0.75rem;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
   color: var(--muted);
   font-weight: 500;
-  font-size: .95rem;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all .2s;
   white-space: nowrap;
   position: relative;
   bottom: -2px;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+@media (min-width: 1201px) {
+  .tab-btn {
+    font-size: 0.9rem;
+    padding: .85rem 1rem;
+  }
 }
 
 .tab-btn:hover {
