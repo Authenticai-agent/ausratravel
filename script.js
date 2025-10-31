@@ -245,6 +245,207 @@ if (form) {
   });
 }
 
+/* Questionnaire recommendation engine */
+const experienceMapping = {
+  'Painting & Glass Art': {
+    interests: ['art-creative', 'nature'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  },
+  'Yoga with Goats': {
+    interests: ['wellness', 'nature', 'solitude'],
+    activity: ['moderate', 'relaxed'],
+    group: ['social', 'mixed', 'solo']
+  },
+  'Cheese & Wine': {
+    interests: ['culinary', 'culture-history'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  },
+  'Meditation & Mindfulness': {
+    interests: ['wellness', 'solitude'],
+    activity: ['relaxed', 'moderate'],
+    group: ['solo', 'mixed']
+  },
+  'Leave Me Alone': {
+    interests: ['solitude', 'nature'],
+    activity: ['relaxed'],
+    group: ['solo']
+  },
+  'Perfume Making Grasse': {
+    interests: ['art-creative', 'culture-history'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  },
+  'Olive Oil Workshop': {
+    interests: ['culinary', 'culture-history', 'nature'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  },
+  'Lavender Workshop': {
+    interests: ['art-creative', 'nature', 'culture-history'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  },
+  'Castellane Heritage': {
+    interests: ['culture-history', 'nature'],
+    activity: ['active', 'moderate'],
+    group: ['social', 'mixed']
+  }
+};
+
+const calculateRecommendations = (formData) => {
+  const interests = Array.from(formData.getAll('interests'));
+  const activity = formData.get('activity_level');
+  const group = formData.get('group_preference');
+
+  const scores = {};
+
+  Object.keys(experienceMapping).forEach(exp => {
+    let score = 0;
+    const mapping = experienceMapping[exp];
+
+    // Score based on interests
+    interests.forEach(int => {
+      if (mapping.interests.includes(int)) score += 3;
+    });
+
+    // Score based on activity level
+    if (activity && mapping.activity.includes(activity)) score += 2;
+
+    // Score based on group preference
+    if (group && mapping.group.includes(group)) score += 2;
+
+    if (score > 0) scores[exp] = score;
+  });
+
+  // Sort by score and return top matches
+  return Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([exp]) => exp);
+};
+
+const showRecommendations = (recommended) => {
+  const container = document.getElementById('recommended-experiences');
+  const recommendationsDiv = document.getElementById('recommendations');
+  const questionnaire = document.getElementById('pre-questionnaire');
+  
+  if (!container || !recommendationsDiv || !questionnaire) return;
+
+  container.innerHTML = '';
+  
+  if (recommended.length === 0) {
+    container.innerHTML = '<div class="recommended-card"><h5>All Experiences Available</h5><p>Based on your preferences, any of our experiences could work for you! Browse below or continue to book.</p></div>';
+  } else {
+    recommended.forEach(exp => {
+      const card = document.createElement('div');
+      card.className = 'recommended-card';
+      card.innerHTML = `
+        <h5>${exp}</h5>
+        <p>Based on your interests and preferences, this experience seems like a great match for you.</p>
+        <button type="button" class="btn btn-secondary small" data-select-exp="${exp}" style="margin-top:.75rem;">Select This Experience</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  questionnaire.style.display = 'none';
+  recommendationsDiv.style.display = 'block';
+
+  // Handle select experience buttons
+  container.querySelectorAll('[data-select-exp]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('data-select-exp');
+      const select = document.getElementById('experience');
+      if (select) {
+        const option = Array.from(select.options).find(o => o.value === exp || o.textContent.includes(exp));
+        if (option) select.value = option.value;
+      }
+      proceedToBooking();
+    });
+  });
+};
+
+const proceedToBooking = () => {
+  const questionnaireStep = document.getElementById('questionnaire-step');
+  const bookingStep = document.getElementById('booking-step');
+  if (questionnaireStep) questionnaireStep.classList.remove('active');
+  if (bookingStep) {
+    bookingStep.classList.add('active');
+    bookingStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
+// Questionnaire form handling
+const questionnaireForm = document.getElementById('pre-questionnaire');
+if (questionnaireForm) {
+  questionnaireForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(questionnaireForm);
+    
+    // Store questionnaire data in sessionStorage for later
+    const questionnaireData = {};
+    formData.forEach((value, key) => {
+      if (key === 'interests') {
+        if (!questionnaireData[key]) questionnaireData[key] = [];
+        questionnaireData[key].push(value);
+      } else {
+        questionnaireData[key] = value;
+      }
+    });
+    sessionStorage.setItem('questionnaireData', JSON.stringify(questionnaireData));
+    
+    const recommended = calculateRecommendations(formData);
+    showRecommendations(recommended);
+  });
+}
+
+// Skip questionnaire
+const skipBtn = document.getElementById('skip-questionnaire');
+if (skipBtn) {
+  skipBtn.addEventListener('click', () => {
+    proceedToBooking();
+  });
+}
+
+// Back to questionnaire
+const backBtn = document.getElementById('back-to-questionnaire');
+if (backBtn) {
+  backBtn.addEventListener('click', () => {
+    const recommendationsDiv = document.getElementById('recommendations');
+    const questionnaire = document.getElementById('pre-questionnaire');
+    if (recommendationsDiv) recommendationsDiv.style.display = 'none';
+    if (questionnaire) questionnaire.style.display = 'block';
+  });
+}
+
+// Proceed to booking from recommendations
+const proceedBtn = document.getElementById('proceed-to-booking');
+if (proceedBtn) {
+  proceedBtn.addEventListener('click', () => {
+    proceedToBooking();
+  });
+}
+
+// Include questionnaire data in booking submission
+const bookingForm = document.querySelector('.booking-form');
+if (bookingForm) {
+  const originalSubmit = bookingForm.onsubmit;
+  bookingForm.addEventListener('submit', async (e) => {
+    // Get questionnaire data if available
+    const questionnaireData = sessionStorage.getItem('questionnaireData');
+    if (questionnaireData) {
+      const data = JSON.parse(questionnaireData);
+      // Add hidden fields or append to notes
+      const notesField = document.getElementById('notes');
+      if (notesField && notesField.value.trim() === '') {
+        notesField.value = `Questionnaire Data:\n- Interests: ${data.interests?.join(', ') || 'None'}\n- Activity Level: ${data.activity_level || 'Not specified'}\n- Group Preference: ${data.group_preference || 'Not specified'}\n- Marketing Source: ${data.marketing_source || 'Not specified'}`;
+      }
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
   recalcPrice();

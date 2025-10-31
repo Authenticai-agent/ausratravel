@@ -232,9 +232,145 @@
                     <div class="tab-content" id="tab-booking">
                         <div class="tab-card">
                             <div class="tab-card-content">
-                                <h3>Book Your Escape</h3>
-                                <p>Tell us your preferred dates and experience. We'll confirm availability within 24–48 hours.</p>
-                                <form class="booking-form" netlify>
+                                <div id="questionnaire-step" class="booking-step active">
+                                    <h3>Find Your Perfect Experience</h3>
+                                    <p>Answer a few questions to get personalized recommendations, or skip to book directly.</p>
+                                    
+                                    <form id="pre-questionnaire" class="questionnaire-form">
+                                        <div class="form-row">
+                                            <label for="physical-ability">Are you able to walk 15 minutes at a time at a reasonable pace, stand for up to 20–30 minutes, and go up one flight of stairs without trouble? <span class="required">*</span></label>
+                                            <p class="field-note">If you think you might have difficulty with this, please contact us at <a href="mailto:jura@authenticai.ai">jura@authenticai.ai</a> or <a href="tel:+1-703-375-9548">+1 (703) 375-9548</a> before booking.</p>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" id="physical-ability" name="physical_ability" required>
+                                                <span>Yes, I am able</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="interest-art">What interests you most? (Select all that apply)</label>
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="art-creative">
+                                                    <span>Art & Creative Workshops</span>
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="wellness">
+                                                    <span>Wellness & Mindfulness</span>
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="culinary">
+                                                    <span>Culinary & Wine</span>
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="nature">
+                                                    <span>Nature & Outdoors</span>
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="culture-history">
+                                                    <span>Culture & History</span>
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="interests" value="solitude">
+                                                    <span>Solitude & Peace</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="activity-level">Preferred Activity Level</label>
+                                            <select id="activity-level" name="activity_level">
+                                                <option value="">Select...</option>
+                                                <option value="active">Active (lots of walking, workshops, excursions)</option>
+                                                <option value="moderate">Moderate (mix of activities and relaxation)</option>
+                                                <option value="relaxed">Relaxed (mostly peaceful, optional activities)</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="group-preference">Group Experience Preference</label>
+                                            <select id="group-preference" name="group_preference">
+                                                <option value="">Select...</option>
+                                                <option value="social">I enjoy group activities and meeting people</option>
+                                                <option value="mixed">Mix of group activities and solo time</option>
+                                                <option value="solo">Prefer mostly solo/independent time</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="bathroom-ack">Hotel rooms may come with either a shower or bathtub. (Bathtub has a showerhead) We cannot guarantee specific bathroom preferences. <span class="required">*</span></label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" id="bathroom-ack" name="bathroom_ack" required>
+                                                <span>I understand</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="rooming-with">If you are rooming with someone who is making their own reservation with us, please list their name here</label>
+                                            <input type="text" id="rooming-with" name="rooming_with" placeholder="Name of travel companion">
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="travel-companions">Are you traveling with friends or family that also booked this trip? If yes, what are their names?</label>
+                                            <input type="text" id="travel-companions" name="travel_companions" placeholder="Names of travel companions">
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="marketing-source">How did you hear about us? <span class="required">*</span></label>
+                                            <div class="radio-group">
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="instagram" required>
+                                                    <span>Instagram</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="facebook" required>
+                                                    <span>Facebook</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="google" required>
+                                                    <span>Google Ad</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="search" required>
+                                                    <span>Internet Search</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="blog" required>
+                                                    <span>Blog Article</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="friend" required>
+                                                    <span>Friend/Family Referral</span>
+                                                </label>
+                                                <label class="radio-label">
+                                                    <input type="radio" name="marketing_source" value="other" required>
+                                                    <span>Other</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="additional-info">Is there anything else you would like to share with us?</label>
+                                            <textarea id="additional-info" name="additional_info" rows="3" placeholder="Dietary restrictions, special requests, mobility concerns, etc."></textarea>
+                                        </div>
+
+                                        <div class="questionnaire-actions">
+                                            <button type="submit" class="btn btn-primary">Get Recommendations</button>
+                                            <button type="button" class="btn btn-secondary" id="skip-questionnaire">Skip & Book Directly</button>
+                                        </div>
+                                    </form>
+
+                                    <div id="recommendations" class="recommendations" style="display: none;">
+                                        <h4>Recommended Experiences for You:</h4>
+                                        <div id="recommended-experiences" class="recommended-cards"></div>
+                                        <button type="button" class="btn btn-secondary" id="back-to-questionnaire">Edit Answers</button>
+                                        <button type="button" class="btn btn-primary" id="proceed-to-booking">Continue to Booking</button>
+                                    </div>
+                                </div>
+
+                                <div id="booking-step" class="booking-step" style="display: none;">
+                                    <h3>Book Your Escape</h3>
+                                    <p>Tell us your preferred dates and experience. We'll confirm availability within 24–48 hours.</p>
+                                    <form class="booking-form" netlify>
                                     <div class="form-row">
                                         <label for="name">Full Name</label>
                                         <input id="name" name="name" type="text" required>
@@ -295,6 +431,7 @@
                                     <button class="btn btn-primary" type="submit" id="submit-btn">Request Availability</button>
                                     <div class="form-row" id="form-message" role="status" aria-live="polite"></div>
                                 </form>
+                                </div>
                             </div>
                         </div>
                     </div>
