@@ -49,6 +49,8 @@
                         <button class="tab-btn" data-tab="food">Food</button>
                         <button class="tab-btn" data-tab="daily-plans">Daily Plans</button>
                         <button class="tab-btn" data-tab="artisans">Local Artisans & Guides</button>
+                        <button class="tab-btn" data-tab="gallery">Gallery</button>
+                        <button class="tab-btn" data-tab="reviews">Reviews</button>
                         <button class="tab-btn" data-tab="booking">Booking</button>
                     </div>
 
@@ -223,6 +225,82 @@
                                     <div class="feature-item">
                                         <strong>Authentic Connections</strong>
                                         <p>Build genuine relationships with local creators. Take home not just products, but knowledge and connections to Castellane's artisan community.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-gallery">
+                        <div class="tab-card">
+                            <div class="tab-card-content">
+                                <h3>Gallery</h3>
+                                <p>See authentic moments from our retreats, experiences, and culinary adventures in the Castellane region.</p>
+                                <div class="gallery-grid">
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=800&auto=format&fit=crop" alt="Yoga retreat in Castellane" loading="lazy">
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=800&auto=format&fit=crop" alt="Wine tasting experience" loading="lazy">
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a97b8a7?q=80&w=800&auto=format&fit=crop" alt="Local artisan workshop" loading="lazy">
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop" alt="Provençal cuisine" loading="lazy">
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop" alt="Lavender fields" loading="lazy">
+                                    </div>
+                                    <div class="gallery-item">
+                                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop" alt="Castellane region landscape" loading="lazy">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-reviews">
+                        <div class="tab-card">
+                            <div class="tab-card-content">
+                                <h3>Guest Reviews</h3>
+                                <p>Share your experience or read what other guests have to say about their authentic Castellane adventures.</p>
+                                
+                                <div class="reviews-form-section">
+                                    <h4>Leave a Review</h4>
+                                    <form id="review-form" class="review-form">
+                                        <div class="form-row">
+                                            <label for="reviewer-name">Your Name <span class="required">*</span></label>
+                                            <input id="reviewer-name" name="name" type="text" required>
+                                        </div>
+                                        <div class="form-row">
+                                            <label>Rating <span class="required">*</span></label>
+                                            <div class="star-rating">
+                                                <input type="radio" id="star5" name="rating" value="5" required>
+                                                <label for="star5" class="star-label">★</label>
+                                                <input type="radio" id="star4" name="rating" value="4">
+                                                <label for="star4" class="star-label">★</label>
+                                                <input type="radio" id="star3" name="rating" value="3">
+                                                <label for="star3" class="star-label">★</label>
+                                                <input type="radio" id="star2" name="rating" value="2">
+                                                <label for="star2" class="star-label">★</label>
+                                                <input type="radio" id="star1" name="rating" value="1">
+                                                <label for="star1" class="star-label">★</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label for="review-text">Your Review <span class="required">*</span></label>
+                                            <textarea id="review-text" name="review" rows="5" placeholder="Tell us about your experience..." required></textarea>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">Submit Review</button>
+                                        <div class="form-row" id="review-form-message" role="status" aria-live="polite"></div>
+                                    </form>
+                                </div>
+
+                                <div class="reviews-display-section">
+                                    <h4>Guest Reviews</h4>
+                                    <div id="reviews-list" class="reviews-list">
+                                        <!-- Reviews will be loaded here -->
                                     </div>
                                 </div>
                             </div>

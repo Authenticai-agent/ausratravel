@@ -995,6 +995,134 @@ input:focus, select:focus, textarea:focus { outline: 2px solid #2f7bdc; outline-
 .copy { text-align: right; opacity: .8; }
 @media (max-width: 900px) { .copy { text-align: center; } }
 
+/* Gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.gallery-item {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #ffffff12;
+  background: #0e1319;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+/* Reviews */
+.reviews-form-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #ffffff15;
+}
+
+.reviews-form-section h4,
+.reviews-display-section h4 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+
+.review-form {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-label {
+  font-size: 2rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.star-rating input[type="radio"]:checked ~ .star-label,
+.star-label:hover,
+.star-label:hover ~ .star-label {
+  color: #ffd700;
+}
+
+.star-rating input[type="radio"]:checked ~ .star-label {
+  color: #ffd700;
+}
+
+.reviews-list {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.review-item {
+  padding: 1.5rem;
+  background: #0e1319;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.review-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.review-rating {
+  color: #ffd700;
+  font-size: 1.1rem;
+  letter-spacing: 0.1rem;
+}
+
+.review-date {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.review-text {
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.reviews-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
 /* Utilities */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 1px, 1px); border: 0; }
 

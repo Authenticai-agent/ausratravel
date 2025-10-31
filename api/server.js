@@ -185,6 +185,95 @@ app.post('/api/booking', async (req, res) => {
   }
 });
 
+// Get reviews
+app.get('/api/reviews', async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.json({ success: true, reviews: [] });
+    }
+    
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    res.json({ 
+      success: true, 
+      reviews: data || [] 
+    });
+  } catch (err) {
+    console.error('Reviews fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+// Submit review
+app.post('/api/reviews', async (req, res) => {
+  try {
+    const { name, rating, review } = req.body;
+    
+    if (!name || !rating || !review) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    }
+    
+    // Save to Supabase
+    let reviewId = null;
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('reviews')
+        .insert({
+          name,
+          rating: parseInt(rating, 10),
+          review,
+          status: 'pending' // Reviews need approval
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        // Continue even if DB fails
+      } else {
+        reviewId = data?.id;
+      }
+    }
+    
+    // Send email notification to admin
+    if (resend) {
+      await resend.emails.send({
+        from: 'Authentic France <noreply@authenticai.ai>',
+        to: TO_EMAIL,
+        subject: `New Review Submitted: ${rating} stars`,
+        html: `
+          <h2>New Review Submitted</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Rating:</strong> ${rating} out of 5 stars</p>
+          <p><strong>Review:</strong></p>
+          <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin: 1rem 0; white-space: pre-wrap;">${review}</div>
+          ${reviewId ? `<p><strong>Review ID:</strong> ${reviewId}</p>` : ''}
+          <p><em>Review is pending approval. Approve it in your database to make it visible on the website.</em></p>
+        `
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Review submitted successfully',
+      reviewId 
+    });
+  } catch (err) {
+    console.error('Review submission error:', err);
+    res.status(500).json({ error: 'Failed to submit review' });
+  }
+});
+
 // Submit custom request (feedback/contact form)
 app.post('/api/custom-request', async (req, res) => {
   try {

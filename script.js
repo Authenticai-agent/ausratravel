@@ -584,7 +584,139 @@ if (customRequestForm) {
   });
 }
 
+// Reviews functionality
+const reviewForm = document.getElementById('review-form');
+const reviewsList = document.getElementById('reviews-list');
+const reviewFormMessage = document.getElementById('review-form-message');
+
+// Load reviews on page load
+async function loadReviews() {
+  try {
+    const apiUrl = window.API_BASE_URL || '';
+    const response = await fetch(`${apiUrl}/api/reviews`);
+    const data = await response.json();
+    
+    if (data.success && data.reviews) {
+      displayReviews(data.reviews);
+    }
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+  }
+}
+
+// Display reviews
+function displayReviews(reviews) {
+  if (!reviewsList) return;
+  
+  if (reviews.length === 0) {
+    reviewsList.innerHTML = '<p class="reviews-empty">No reviews yet. Be the first to share your experience!</p>';
+    return;
+  }
+  
+  reviewsList.innerHTML = reviews.map(review => {
+    const stars = '★'.repeat(review.rating);
+    const date = new Date(review.created_at).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    return `
+      <div class="review-item">
+        <div class="review-header">
+          <div>
+            <div class="review-name">${escapeHtml(review.name)}</div>
+            <div class="review-rating">${stars}</div>
+          </div>
+          <div class="review-date">${date}</div>
+        </div>
+        <p class="review-text">${escapeHtml(review.review)}</p>
+      </div>
+    `;
+  }).join('');
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Handle review form submission
+if (reviewForm) {
+  reviewForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const submitBtn = reviewForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
+
+    if (reviewFormMessage) {
+      reviewFormMessage.textContent = '';
+      reviewFormMessage.className = '';
+    }
+
+    const formData = new FormData(reviewForm);
+    const data = {
+      name: formData.get('name'),
+      rating: parseInt(formData.get('rating'), 10),
+      review: formData.get('review')
+    };
+
+    try {
+      const apiUrl = window.API_BASE_URL || '';
+      const response = await fetch(`${apiUrl}/api/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit review');
+      }
+
+      if (reviewFormMessage) {
+        reviewFormMessage.textContent = 'Thank you! Your review has been submitted and will appear shortly.';
+        reviewFormMessage.className = 'form-message success';
+      }
+
+      reviewForm.reset();
+      
+      // Reload reviews to show the new one
+      await loadReviews();
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        if (reviewFormMessage) {
+          reviewFormMessage.textContent = '';
+          reviewFormMessage.className = '';
+        }
+      }, 3000);
+
+    } catch (error) {
+      console.error('Review submission error:', error);
+      if (reviewFormMessage) {
+        reviewFormMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        reviewFormMessage.className = 'form-message error';
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
   recalcPrice();
+  loadReviews();
 });
