@@ -53,7 +53,12 @@ app.get('/api/availability', async (req, res) => {
 // Submit booking request
 app.post('/api/booking', async (req, res) => {
   try {
-    const { name, email, experience, occupancy, guests, dates, notes } = req.body;
+    const { 
+      name, email, experience, occupancy, guests, dates, notes,
+      physical_ability, interests, activity_level, group_preference,
+      bathroom_ack, rooming_with, travel_companions, marketing_source,
+      additional_info, extra_days_before, extra_days_after
+    } = req.body;
     
     if (!name || !email || !experience || !dates) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -101,11 +106,28 @@ app.post('/api/booking', async (req, res) => {
     if (resend) {
       const pricePerDay = { double: 700, single: 1200 };
       const rate = pricePerDay[occupancy] || 700;
-      const total = rate * parseInt(guests, 10) * nights;
+      const extraDays = (parseInt(extra_days_before || 0, 10) + parseInt(extra_days_after || 0, 10));
+      const totalNights = nights + extraDays;
+      const extraTotal = rate * parseInt(guests, 10) * extraDays;
+      const total = rate * parseInt(guests, 10) * nights + extraTotal;
       const formattedTotal = new Intl.NumberFormat('en-US', { 
         style: 'currency', 
         currency: 'USD' 
       }).format(total);
+      
+      // Build questionnaire data summary
+      let questionnaireHtml = '';
+      if (physical_ability || interests || activity_level || marketing_source) {
+        questionnaireHtml = '<h3>Questionnaire Data</h3>';
+        if (interests && Array.isArray(interests)) questionnaireHtml += `<p><strong>Interests:</strong> ${interests.join(', ')}</p>`;
+        if (activity_level) questionnaireHtml += `<p><strong>Activity Level:</strong> ${activity_level}</p>`;
+        if (group_preference) questionnaireHtml += `<p><strong>Group Preference:</strong> ${group_preference}</p>`;
+        if (marketing_source) questionnaireHtml += `<p><strong>Marketing Source:</strong> ${marketing_source}</p>`;
+        if (rooming_with) questionnaireHtml += `<p><strong>Rooming With:</strong> ${rooming_with}</p>`;
+        if (travel_companions) questionnaireHtml += `<p><strong>Travel Companions:</strong> ${travel_companions}</p>`;
+        if (additional_info) questionnaireHtml += `<p><strong>Additional Info:</strong> ${additional_info}</p>`;
+        questionnaireHtml += '<hr>';
+      }
       
       await resend.emails.send({
         from: 'Authentic France <noreply@authenticai.ai>',
@@ -119,8 +141,9 @@ app.post('/api/booking', async (req, res) => {
           <p><strong>Experience:</strong> ${experience}</p>
           <p><strong>Occupancy:</strong> ${occupancy}</p>
           <p><strong>Guests:</strong> ${guests}</p>
-          <p><strong>Dates:</strong> ${checkIn} to ${checkOut} (${nights} nights)</p>
+          <p><strong>Dates:</strong> ${checkIn} to ${checkOut} (${nights} nights${extraDays > 0 ? ` + ${extraDays} extra nights` : ''})</p>
           <p><strong>Estimated Total:</strong> ${formattedTotal}</p>
+          ${questionnaireHtml}
           ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
           ${bookingId ? `<p><strong>Booking ID:</strong> ${bookingId}</p>` : ''}
           <hr>

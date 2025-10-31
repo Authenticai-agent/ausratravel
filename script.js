@@ -431,17 +431,26 @@ if (proceedBtn) {
 // Include questionnaire data in booking submission
 const bookingForm = document.querySelector('.booking-form');
 if (bookingForm) {
-  const originalSubmit = bookingForm.onsubmit;
   bookingForm.addEventListener('submit', async (e) => {
-    // Get questionnaire data if available
+    // Get questionnaire data if available and add as hidden fields
     const questionnaireData = sessionStorage.getItem('questionnaireData');
     if (questionnaireData) {
       const data = JSON.parse(questionnaireData);
-      // Add hidden fields or append to notes
-      const notesField = document.getElementById('notes');
-      if (notesField && notesField.value.trim() === '') {
-        notesField.value = `Questionnaire Data:\n- Interests: ${data.interests?.join(', ') || 'None'}\n- Activity Level: ${data.activity_level || 'Not specified'}\n- Group Preference: ${data.group_preference || 'Not specified'}\n- Marketing Source: ${data.marketing_source || 'Not specified'}`;
-      }
+      
+      // Create hidden fields for questionnaire data
+      Object.keys(data).forEach(key => {
+        const value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
+        if (value) {
+          let hiddenInput = document.querySelector(`input[name="${key}"][type="hidden"]`);
+          if (!hiddenInput) {
+            hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = key;
+            bookingForm.appendChild(hiddenInput);
+          }
+          hiddenInput.value = value;
+        }
+      });
     }
   });
 }
