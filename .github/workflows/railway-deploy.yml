@@ -31,6 +31,7 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
           if [ -z "$RAILWAY_TOKEN" ]; then
             echo "::error::RAILWAY_TOKEN secret is not set"
@@ -40,6 +41,14 @@ jobs:
           
           # Railway CLI uses RAILWAY_TOKEN automatically when set
           export RAILWAY_TOKEN
+          
+          # Link project if PROJECT_ID is provided and not already linked
+          if [ -n "$RAILWAY_PROJECT_ID" ] && [ ! -f .railway/project.json ]; then
+            echo "Linking Railway project..."
+            railway link "$RAILWAY_PROJECT_ID" --non-interactive || true
+          fi
+          
+          # Deploy
           railway up --detach
 
 
