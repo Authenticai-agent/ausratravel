@@ -1,0 +1,31 @@
+[build]
+  # This is a static site (no build step)
+  command = ""
+  publish = "."
+
+# Proxy API calls from Netlify to your Railway service
+# IMPORTANT: Replace YOUR-PUBLIC-RAILWAY-URL with your public Railway URL (not internal)
+[[redirects]]
+  from = "/api/*"
+  to = "https://ausratravel-production.up.railway.app/api/:splat"
+  status = 200
+  force = true
+
+# CORS headers for API proxy
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+
+# Security headers for the site
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; img-src 'self' https: data:;"
+
+
