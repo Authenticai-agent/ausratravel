@@ -1,6 +1,6 @@
 {
   "name": "authentic-france-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Railway API server for Authentic France bookings",
   "main": "server.js",
   "type": "module",
