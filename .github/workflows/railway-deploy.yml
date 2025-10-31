@@ -28,6 +28,10 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Create deployment archive
+        run: |
+          tar -czf deploy.tar.gz .
+      
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
@@ -39,15 +43,29 @@ jobs:
             exit 1
           fi
           
-          # Railway CLI automatically uses RAILWAY_TOKEN environment variable
-          # Set project context if PROJECT_ID is provided
-          if [ -n "$RAILWAY_PROJECT_ID" ]; then
-            # Create .railway directory structure for Railway CLI
-            mkdir -p .railway
-            echo "{\"project\":{\"id\":\"$RAILWAY_PROJECT_ID\"},\"environment\":{\"id\":null,\"name\":\"production\"},\"service\":{\"id\":null,\"name\":\"ausratravel\"}}" > .railway/project.json
+          if [ -z "$RAILWAY_PROJECT_ID" ]; then
+            echo "::error::RAILWAY_PROJECT_ID secret is not set"
+            exit 1
           fi
           
-          # Deploy to Railway (CLI uses RAILWAY_TOKEN automatically)
-          railway up --service ausratravel --detach
+          # Use Railway CLI with explicit project/service specification
+          # Create .railway config file
+          mkdir -p .railway
+          cat > .railway/project.json << EOF
+          {
+            "project": {
+              "id": "$RAILWAY_PROJECT_ID"
+            },
+            "environment": {
+              "name": "production"
+            },
+            "service": {
+              "name": "ausratravel"
+            }
+          }
+          EOF
+          
+          # Deploy using Railway CLI with token
+          RAILWAY_TOKEN="$RAILWAY_TOKEN" railway up --service ausratravel --detach
 
 
