@@ -92,8 +92,184 @@ body {
 
 .experiences { padding: 3.25rem 0; }
 .section-head { text-align: center; margin-bottom: 1.8rem; }
-.section-head h2 { font-family: "Playfair Display", Georgia, serif; font-weight: 700; margin: 0 0 .25rem; font-size: clamp(1.6rem, 2.8vw, 2.2rem); }
+.section-head h2 { font-family: "Playfair Display", Georgia, serif; font-weight: 700; margin: 2rem 0 .25rem; font-size: clamp(1.6rem, 2.8vw, 2.2rem); }
 .section-head p { color: var(--muted); margin: 0; }
+
+/* Pricing Card */
+.pricing-card {
+  max-width: 680px;
+  margin: 0 auto 2.5rem;
+  background: linear-gradient(180deg, #12161c, #0f141a);
+  border: 1px solid #ffffff15;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+
+.pricing-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 1.6rem;
+  background: linear-gradient(135deg, #1a2332, #0f151c);
+  border-bottom: 1px solid #ffffff10;
+}
+
+.pricing-card-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .35rem .75rem;
+  background: linear-gradient(135deg, #39d98a30, #39d98a15);
+  color: #39d98a;
+  border: 1px solid #39d98a40;
+  border-radius: 8px;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.pricing-card-body {
+  padding: 1.6rem 1.6rem 1.2rem;
+}
+
+.pricing-main {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.pricing-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .85rem 1rem;
+  background: #0e1319;
+  border: 1px solid #ffffff0a;
+  border-radius: 12px;
+}
+
+.pricing-item.total {
+  background: linear-gradient(135deg, #2f7bdc15, #3da6ff10);
+  border-color: #3da6ff30;
+  padding: 1rem 1rem;
+  margin-top: .25rem;
+}
+
+.pricing-label {
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.pricing-value {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.pricing-item.total .pricing-value {
+  color: #3da6ff;
+  font-size: 1.05rem;
+}
+
+.pricing-note {
+  margin: 1rem 0 0;
+  padding: .85rem 1rem;
+  background: #0f151c;
+  border-left: 3px solid #39d98a40;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.pricing-card-footer {
+  padding: 0 1.6rem 1.4rem;
+  border-top: 1px solid #ffffff08;
+  padding-top: 1.2rem;
+}
+
+.cancellation-details {
+  background: #0e1319;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  padding: 0;
+}
+
+.cancellation-details summary {
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cancellation-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.cancellation-details summary::after {
+  content: '▼';
+  font-size: .7rem;
+  color: var(--muted);
+  transition: transform .2s;
+}
+
+.cancellation-details[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.cancellation-content {
+  padding: 0 1.2rem 1.2rem;
+  border-top: 1px solid #ffffff08;
+  margin-top: .5rem;
+  padding-top: 1rem;
+  display: grid;
+  gap: .85rem;
+}
+
+.policy-item {
+  padding: .75rem 1rem;
+  background: #0a0f15;
+  border-radius: 10px;
+  color: var(--text);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.policy-item strong {
+  color: #eaf3ff;
+  display: block;
+  margin-bottom: .25rem;
+}
+
+@media (max-width: 600px) {
+  .pricing-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .75rem;
+  }
+  .pricing-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .4rem;
+  }
+  .pricing-value {
+    font-size: 1.1rem;
+  }
+}
 
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
