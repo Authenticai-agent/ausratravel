@@ -567,12 +567,37 @@ body {
   }
 }
 
-.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-@media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+.cards { display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
 
-.card { background: linear-gradient(180deg, #12161c, #0f141a); border: 1px solid #ffffff12; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); display: grid; grid-template-columns: 360px 1fr; }
-@media (max-width: 900px) { .card { grid-template-columns: 1fr; } }
-.card-media { min-height: 220px; background-size: cover; background-position: center; }
+.card { 
+  background: linear-gradient(180deg, #12161c, #0f141a); 
+  border: 1px solid #ffffff12; 
+  border-radius: 16px; 
+  overflow: hidden; 
+  box-shadow: var(--shadow); 
+  display: grid; 
+  grid-template-columns: 400px 1fr; 
+  min-height: 320px;
+}
+@media (max-width: 1000px) { 
+  .card { 
+    grid-template-columns: 320px 1fr; 
+  } 
+}
+@media (max-width: 800px) { 
+  .card { 
+    grid-template-columns: 1fr; 
+    min-height: auto;
+  }
+  .card-media {
+    min-height: 280px;
+  }
+}
+.card-media { 
+  min-height: 320px; 
+  background-size: cover; 
+  background-position: center; 
+}
 .media-art { background-image: url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop'); }
 .media-yoga { background-image: url('https://images.unsplash.com/photo-1520975954732-35dd22f47596?q=80&w=1600&auto=format&fit=crop'); }
 .media-wine { background-image: url('https://images.unsplash.com/photo-1498647587721-1ff0ae9ea79a?q=80&w=1600&auto=format&fit=crop'); }
@@ -583,17 +608,34 @@ body {
 .media-lavender { background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1600&auto=format&fit=crop'); }
 .media-heritage { background-image: url('https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?q=80&w=1600&auto=format&fit=crop'); }
 
-.card-body { padding: 1.1rem 1.1rem 1.25rem; }
-.card-body h3 { margin: 0 0 .75rem; font-size: 1.25rem; }
+.card-body { 
+  padding: 1.5rem 1.75rem; 
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+.card-body h3 { 
+  margin: 0 0 1rem; 
+  font-size: 1.35rem; 
+  line-height: 1.2;
+}
 
 .trip-details {
   margin: 0 0 1rem;
-  padding: 1rem;
+  padding: 1rem 1.1rem;
   background: #0e1319;
   border: 1px solid #ffffff0a;
   border-radius: 12px;
   display: grid;
-  gap: .65rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .65rem .85rem;
+  flex: 1;
+}
+
+@media (max-width: 800px) {
+  .trip-details {
+    grid-template-columns: 1fr;
+  }
 }
 
 .detail-item {
@@ -601,8 +643,10 @@ body {
   align-items: flex-start;
   gap: .5rem;
   color: var(--text);
-  font-size: .9rem;
+  font-size: .92rem;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .detail-icon {
@@ -618,10 +662,16 @@ body {
 }
 
 .card-description {
-  margin: 1rem 0 0;
+  margin: .75rem 0 1.25rem;
   color: var(--muted);
   font-size: .95rem;
   line-height: 1.6;
+  flex-shrink: 0;
+}
+
+.card-body .btn {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .price { color: #d9e5f2; margin: 0 0 .5rem; font-size: .98rem; }
