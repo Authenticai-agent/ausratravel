@@ -319,12 +319,26 @@ const experienceMapping = {
   }
 };
 
+// Map experience display names to mapping keys
+const experienceNameMap = {
+  'Painting & Glass Art': 'Painting & Glass Art',
+  'Yoga with Goats': 'Yoga with Goats',
+  'Cheese & Wine': 'Cheese & Wine',
+  'Meditation & Mindfulness': 'Meditation & Mindfulness',
+  'Leave Me Alone': 'Leave Me Alone',
+  'Perfume Making Grasse': 'Perfume Making Grasse',
+  'Olive Oil Workshop': 'Olive Oil Workshop',
+  'Lavender Workshop': 'Lavender Workshop',
+  'Castellane Heritage': 'Castellane Heritage'
+};
+
 const calculateRecommendations = (formData) => {
   const interests = Array.from(formData.getAll('interests'));
   const activity = formData.get('activity_level');
   const group = formData.get('group_preference');
 
   const scores = {};
+  const matchedExperiences = [];
 
   Object.keys(experienceMapping).forEach(exp => {
     let score = 0;
@@ -341,15 +355,76 @@ const calculateRecommendations = (formData) => {
     // Score based on group preference
     if (group && mapping.group.includes(group)) score += 2;
 
-    if (score > 0) scores[exp] = score;
+    if (score > 0) {
+      scores[exp] = score;
+      matchedExperiences.push(exp);
+    }
   });
 
-  // Sort by score and return top matches
+  // Return all matched experiences (sorted by score, but show all that match)
   return Object.entries(scores)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
     .map(([exp]) => exp);
 };
+
+// Filter experience cards based on recommendations
+function filterExperiences(matchedExperiences) {
+  const experienceCards = document.querySelectorAll('.experiences .card');
+  
+  if (!matchedExperiences || matchedExperiences.length === 0) {
+    // Show all experiences if no filter
+    experienceCards.forEach(card => {
+      card.style.display = '';
+    });
+    return;
+  }
+
+  // Map experience names to card buttons
+  const experienceButtonMap = {
+    'Painting & Glass Art': 'Painting & Glass Art',
+    'Yoga with Goats': 'Yoga with Goats',
+    'Cheese & Wine': 'Cheese & Wine',
+    'Meditation & Mindfulness': 'Meditation & Mindfulness',
+    'Leave Me Alone': 'Leave Me Alone',
+    'Perfume Making Grasse': 'Perfume Making Grasse',
+    'Olive Oil Workshop': 'Olive Oil Workshop',
+    'Lavender Workshop': 'Lavender Workshop',
+    'Castellane Heritage': 'Castellane Heritage'
+  };
+
+  experienceCards.forEach(card => {
+    const bookButton = card.querySelector('a[data-experience]');
+    if (bookButton) {
+      const experienceName = bookButton.getAttribute('data-experience');
+      // Check if this experience matches any of the recommended ones
+      const isMatch = matchedExperiences.some(matched => {
+        // Direct match
+        if (experienceName === matched) return true;
+        // Partial match (e.g., "Painting & Glass" matches "Painting & Glass Art")
+        if (experienceName.includes(matched) || matched.includes(experienceName)) return true;
+        // Check the button text
+        const buttonText = bookButton.textContent.trim();
+        if (buttonText.includes(matched.replace('&', '&'))) return true;
+        return false;
+      });
+
+      if (isMatch) {
+        card.style.display = '';
+        card.classList.add('filtered-match');
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  });
+
+  // Scroll to experiences section
+  const experiencesSection = document.getElementById('experiences');
+  if (experiencesSection && matchedExperiences.length > 0) {
+    setTimeout(() => {
+      experiencesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+}
 
 const showRecommendations = (recommended) => {
   const container = document.getElementById('recommended-experiences');
@@ -360,8 +435,13 @@ const showRecommendations = (recommended) => {
 
   container.innerHTML = '';
   
+  // Filter experiences based on recommendations
+  filterExperiences(recommended);
+  
   if (recommended.length === 0) {
     container.innerHTML = '<div class="recommended-card"><h5>All Experiences Available</h5><p>Based on your preferences, any of our experiences could work for you! Browse below or continue to book.</p></div>';
+    // Show all experiences if no specific matches
+    filterExperiences([]);
   } else {
     recommended.forEach(exp => {
       const card = document.createElement('div');
@@ -398,7 +478,12 @@ const proceedToBooking = () => {
   if (questionnaireStep) questionnaireStep.classList.remove('active');
   if (bookingStep) {
     bookingStep.classList.add('active');
-    bookingStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Switch to booking tab
+    const bookingTabBtn = document.querySelector('[data-tab="booking"]');
+    if (bookingTabBtn) bookingTabBtn.click();
+    setTimeout(() => {
+      bookingStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 };
 
@@ -426,10 +511,11 @@ if (questionnaireForm) {
   });
 }
 
-// Skip questionnaire
+// Skip questionnaire - show all experiences
 const skipBtn = document.getElementById('skip-questionnaire');
 if (skipBtn) {
   skipBtn.addEventListener('click', () => {
+    filterExperiences([]); // Show all experiences
     proceedToBooking();
   });
 }
