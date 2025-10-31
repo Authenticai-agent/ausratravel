@@ -32,6 +32,14 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service "authentic-france-api" --yes || railway up --yes
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::error::RAILWAY_TOKEN secret is not set"
+            echo "Please add RAILWAY_TOKEN to: https://github.com/Authenticai-agent/ausratravel/settings/secrets/actions"
+            exit 1
+          fi
+          
+          # Railway CLI uses RAILWAY_TOKEN automatically when set
+          export RAILWAY_TOKEN
+          railway up --detach
 
 
