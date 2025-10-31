@@ -140,11 +140,27 @@ const dayDiff = (start, end) => {
 const recalcPrice = () => {
   const summary = document.getElementById('price-summary');
   const datesVal = document.getElementById('dates')?.value || '';
-  const guests = parseInt(document.getElementById('guests')?.value || '1', 10);
+  const guests = parseInt(document.getElementById('total-guests')?.value || '1', 10);
   const occupancy = document.getElementById('occupancy')?.value || 'double';
   const experience = document.getElementById('experience')?.value || '';
-  const extraBefore = parseInt(document.getElementById('extra-days-before')?.value || '0', 10) || 0;
-  const extraAfter = parseInt(document.getElementById('extra-days-after')?.value || '0', 10) || 0;
+  
+  // Calculate extra days from date pickers
+  const extraBeforeDates = document.getElementById('extra-dates-before')?.value || '';
+  const extraAfterDates = document.getElementById('extra-dates-after')?.value || '';
+  const extraBefore = extraBeforeDates ? calculateNightsFromDates(extraBeforeDates) : 0;
+  const extraAfter = extraAfterDates ? calculateNightsFromDates(extraAfterDates) : 0;
+  
+  function calculateNightsFromDates(dateString) {
+    if (!dateString) return 0;
+    const parts = dateString.split(' to ');
+    if (parts.length === 2) {
+      return dayDiff(parts[0], parts[1]);
+    } else if (parts.length === 1) {
+      // Single date, assume 1 night
+      return 1;
+    }
+    return 0;
+  }
 
   if (!summary) return;
   const parts = datesVal.split(' to ');
@@ -179,93 +195,211 @@ const recalcPrice = () => {
   `;
 };
 
-['guests', 'occupancy', 'experience', 'extra-days-before', 'extra-days-after'].forEach(id => {
+['total-guests', 'occupancy', 'experience', 'extra-dates-before', 'extra-dates-after'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', recalcPrice);
   if (el) el.addEventListener('input', recalcPrice);
 });
 
-/* Submit form to Railway API that sends email via Resend and saves to Supabase */
-const form = document.querySelector('.booking-form');
+// Handle extra days checkbox
+const needExtraDaysCheckbox = document.getElementById('need-extra-days');
+const extraDaysSection = document.getElementById('extra-days-section');
+if (needExtraDaysCheckbox && extraDaysSection) {
+  needExtraDaysCheckbox.addEventListener('change', (e) => {
+    extraDaysSection.style.display = e.target.checked ? 'block' : 'none';
+    if (!e.target.checked) {
+      document.getElementById('extra-dates-before').value = '';
+      document.getElementById('extra-dates-after').value = '';
+      recalcPrice();
+    }
+  });
+}
+
+/* Submit form with Stripe payment */
+const form = document.getElementById('booking-form-main');
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = document.getElementById('form-message');
     const btn = document.getElementById('submit-btn');
+    const stripeErrors = document.getElementById('stripe-errors');
+    
     if (msg) msg.textContent = '';
     if (msg) msg.className = 'form-message';
-    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    if (stripeErrors) stripeErrors.textContent = '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
 
-    // Build payload with questionnaire data
+    // Build payload
     const formData = new FormData(form);
     const payload = {};
     
-    // Get all form fields
-    for (const [key, value] of formData.entries()) {
-      if (key === 'interests') {
-        if (!payload.interests) payload.interests = [];
-        payload.interests.push(value);
-      } else {
-        payload[key] = value;
+    // Primary guest info
+    payload.first_name = formData.get('first_name');
+    payload.last_name = formData.get('last_name');
+    payload.name = `${payload.first_name} ${payload.last_name}`;
+    payload.email = formData.get('email');
+    payload.phone = formData.get('phone');
+    payload.address = formData.get('address');
+    
+    // Trip details
+    payload.experience = formData.get('experience');
+    payload.dates = formData.get('dates');
+    payload.occupancy = formData.get('occupancy');
+    payload.total_guests = parseInt(formData.get('total_guests') || '1', 10);
+    
+    // Travel companions
+    const companions = [];
+    const companionEntries = document.querySelectorAll('.companion-entry');
+    companionEntries.forEach((entry, index) => {
+      const companionId = entry.getAttribute('data-companion-id');
+      const firstName = formData.get(`companion_first_name_${companionId}`);
+      const lastName = formData.get(`companion_last_name_${companionId}`);
+      if (firstName && lastName) {
+        companions.push({
+          first_name: firstName,
+          last_name: lastName,
+          email: formData.get(`companion_email_${companionId}`) || '',
+          phone: formData.get(`companion_phone_${companionId}`) || ''
+        });
       }
+    });
+    payload.travel_companions = companions;
+    
+    // Extra days
+    const extraDatesBefore = formData.get('extra_dates_before') || '';
+    const extraDatesAfter = formData.get('extra_dates_after') || '';
+    
+    if (extraDatesBefore) {
+      const beforeParts = extraDatesBefore.split(' to ');
+      payload.extra_days_before = {
+        dates: beforeParts,
+        nights: beforeParts.length === 2 ? dayDiff(beforeParts[0], beforeParts[1]) : 1
+      };
     }
     
-    // Add questionnaire data from sessionStorage
+    if (extraDatesAfter) {
+      const afterParts = extraDatesAfter.split(' to ');
+      payload.extra_days_after = {
+        dates: afterParts,
+        nights: afterParts.length === 2 ? dayDiff(afterParts[0], afterParts[1]) : 1
+      };
+    }
+    
+    // Add-ons
+    const addons = formData.getAll('addons').filter(a => a);
+    payload.addons = addons;
+    
+    // Notes
+    payload.notes = formData.get('notes') || '';
+    
+    // Add questionnaire data
     const questionnaireData = sessionStorage.getItem('questionnaireData');
     if (questionnaireData) {
-      const qData = JSON.parse(questionnaireData);
-      Object.keys(qData).forEach(key => {
-        if (key === 'interests' && Array.isArray(qData[key])) {
-          payload.interests = qData[key];
-        } else if (qData[key] && !payload[key]) {
-          payload[key] = qData[key];
-        }
-      });
+      payload.questionnaire_data = JSON.parse(questionnaireData);
     }
 
-    // basic min nights check client-side
+    // Validate minimum nights
     const parts = (payload.dates || '').split(' to ');
     if (parts.length === 2 && dayDiff(parts[0], parts[1]) < 4) {
       if (msg) {
         msg.textContent = 'Minimum stay is 4 nights.';
         msg.className = 'form-message error';
       }
-      if (btn) { btn.disabled = false; btn.textContent = 'Request Availability'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Pay $299 Deposit & Complete Booking'; }
       return;
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/booking`, {
+      const apiUrl = window.API_BASE_URL || '';
+      
+      // Step 1: Create payment intent
+      const paymentResponse = await fetch(`${apiUrl}/api/create-payment-intent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 29900, booking_data: payload }) // $299 in cents
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (!paymentResponse.ok) {
+        throw new Error(paymentData.error || 'Payment setup failed');
+      }
+      
+      // Step 2: Confirm payment with Stripe
+      if (!stripe || !paymentElement) {
+        throw new Error('Payment system not initialized. Please refresh the page.');
+      }
+      
+      const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
+        elements: { payment: paymentElement },
+        clientSecret: paymentData.clientSecret,
+        confirmParams: {
+          return_url: `${window.location.origin}${window.location.pathname}?booking=success`,
+        },
+        redirect: 'if_required'
+      });
+      
+      if (stripeError) {
+        if (stripeErrors) {
+          stripeErrors.textContent = stripeError.message;
+        }
+        if (msg) {
+          msg.textContent = stripeError.message;
+          msg.className = 'form-message error';
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Pay $299 Deposit & Complete Booking'; }
+        return;
+      }
+      
+      // Step 3: Submit booking with payment confirmation
+      payload.stripe_payment_intent_id = paymentIntent.id;
+      payload.deposit_paid = paymentIntent.status === 'succeeded';
+      
+      const bookingResponse = await fetch(`${apiUrl}/api/booking`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       
-      const data = await res.json();
+      const bookingData = await bookingResponse.json();
       
-      if (!res.ok) {
-        throw new Error(data.error || 'Request failed');
+      if (!bookingResponse.ok) {
+        throw new Error(bookingData.error || 'Booking failed');
       }
       
       if (msg) {
-        msg.textContent = 'Thanks! We received your request and will reply within 24–48 hours.';
+        msg.textContent = 'Thank you! Your booking has been confirmed. Check your email for details.';
         msg.className = 'form-message success';
       }
+      
+      // Reset form
       form.reset();
+      document.getElementById('travel-companions-container').innerHTML = '';
+      companionCount = 0;
       recalcPrice();
       
-      // Reset calendar
-      const dateInput = document.getElementById('dates');
-      if (dateInput && dateInput._flatpickr) {
-        dateInput._flatpickr.clear();
+      // Reset calendars
+      const dateInputs = ['dates', 'extra-dates-before', 'extra-dates-after'];
+      dateInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input && input._flatpickr) {
+          input._flatpickr.clear();
+        }
+      });
+      
+      // Scroll to success message
+      if (msg) {
+        msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
+      
     } catch (err) {
+      console.error('Booking error:', err);
       if (msg) {
         msg.textContent = err.message || 'Sorry, something went wrong. Please try again or email us directly.';
         msg.className = 'form-message error';
       }
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Request Availability'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Pay $299 Deposit & Complete Booking'; }
     }
   });
 }
@@ -801,8 +935,179 @@ if (reviewForm) {
   });
 }
 
+// Travel companions management
+let companionCount = 0;
+
+function addCompanionField() {
+  companionCount++;
+  const container = document.getElementById('travel-companions-container');
+  if (!container) return;
+  
+  const companionDiv = document.createElement('div');
+  companionDiv.className = 'companion-entry';
+  companionDiv.setAttribute('data-companion-id', companionCount);
+  companionDiv.innerHTML = `
+    <div style="background: #0e1319; border: 1px solid #ffffff15; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h5 style="margin: 0; font-size: 1rem;">Person ${companionCount}</h5>
+        <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">Remove</button>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" name="companion_first_name_${companionCount}" required>
+        </div>
+        <div>
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" name="companion_last_name_${companionCount}" required>
+        </div>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label>Email</label>
+          <input type="email" name="companion_email_${companionCount}">
+        </div>
+        <div>
+          <label>Phone</label>
+          <input type="tel" name="companion_phone_${companionCount}">
+        </div>
+      </div>
+    </div>
+  `;
+  
+  container.appendChild(companionDiv);
+  
+  // Add remove button handler
+  const removeBtn = companionDiv.querySelector('.remove-companion');
+  if (removeBtn) {
+    removeBtn.addEventListener('click', () => {
+      companionDiv.remove();
+      updateCompanionNumbers();
+    });
+  }
+}
+
+function updateCompanionNumbers() {
+  const companions = document.querySelectorAll('.companion-entry');
+  companions.forEach((comp, index) => {
+    const h5 = comp.querySelector('h5');
+    if (h5) h5.textContent = `Person ${index + 1}`;
+  });
+}
+
+// Add companion button
+const addCompanionBtn = document.getElementById('add-companion-btn');
+if (addCompanionBtn) {
+  addCompanionBtn.addEventListener('click', () => {
+    const totalGuests = parseInt(document.getElementById('total-guests')?.value || '1', 10);
+    const currentCompanions = document.querySelectorAll('.companion-entry').length;
+    
+    // Don't allow more companions than total guests - 1 (primary guest)
+    if (currentCompanions >= totalGuests - 1) {
+      alert(`You can add up to ${totalGuests - 1} travel companion(s) based on your total guests count.`);
+      return;
+    }
+    
+    addCompanionField();
+  });
+}
+
+// Update companions when total guests changes
+const totalGuestsInput = document.getElementById('total-guests');
+if (totalGuestsInput) {
+  totalGuestsInput.addEventListener('change', () => {
+    const totalGuests = parseInt(totalGuestsInput.value || '1', 10);
+    const currentCompanions = document.querySelectorAll('.companion-entry').length;
+    
+    // Remove excess companions if total guests is reduced
+    if (currentCompanions > totalGuests - 1) {
+      const companions = document.querySelectorAll('.companion-entry');
+      for (let i = companions.length - 1; i >= totalGuests - 1; i--) {
+        companions[i].remove();
+      }
+      updateCompanionNumbers();
+    }
+  });
+}
+
+// Initialize Stripe (will be configured with publishable key from backend)
+let stripe = null;
+let paymentElement = null;
+
+async function initializeStripe() {
+  try {
+    // Get Stripe publishable key from backend
+    const apiUrl = window.API_BASE_URL || '';
+    const response = await fetch(`${apiUrl}/api/stripe-config`);
+    const config = await response.json();
+    
+    if (config.publishableKey) {
+      stripe = Stripe(config.publishableKey);
+      const elements = stripe.elements({
+        appearance: {
+          theme: 'night',
+          variables: {
+            colorPrimary: '#3da6ff',
+            colorBackground: '#0e1319',
+            colorText: '#e7edf3',
+            colorDanger: '#ff6b6b',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            spacingUnit: '4px',
+            borderRadius: '12px'
+          }
+        }
+      });
+      
+      paymentElement = elements.create('payment');
+      paymentElement.mount('#stripe-payment-element');
+    }
+  } catch (error) {
+    console.error('Stripe initialization error:', error);
+    // Show fallback message
+    const stripeContainer = document.getElementById('stripe-payment-element');
+    if (stripeContainer) {
+      stripeContainer.innerHTML = '<p style="color: var(--muted);">Payment processing will be available shortly.</p>';
+    }
+  }
+}
+
+// Initialize extra days calendars
+function initExtraDaysCalendars() {
+  const extraBeforeInput = document.getElementById('extra-dates-before');
+  const extraAfterInput = document.getElementById('extra-dates-after');
+  
+  if (extraBeforeInput) {
+    flatpickr(extraBeforeInput, {
+      mode: 'range',
+      minDate: 'today',
+      dateFormat: 'Y-m-d',
+      onClose: () => recalcPrice(),
+    });
+  }
+  
+  if (extraAfterInput) {
+    flatpickr(extraAfterInput, {
+      mode: 'range',
+      minDate: 'today',
+      dateFormat: 'Y-m-d',
+      onClose: () => recalcPrice(),
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
   recalcPrice();
   loadReviews();
+  initializeStripe();
+  
+  // Initialize extra days calendars when checkbox is checked
+  const needExtraDaysCheckbox = document.getElementById('need-extra-days');
+  if (needExtraDaysCheckbox) {
+    needExtraDaysCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        setTimeout(initExtraDaysCalendars, 100);
+      }
+    });
+  }
 });

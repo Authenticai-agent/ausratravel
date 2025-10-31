@@ -962,7 +962,28 @@ body {
   margin-top: 1.5rem;
 }
 
-.booking-form { display: grid; gap: 1rem; max-width: 760px; margin: 0 auto; background: #10161d; border: 1px solid #ffffff12; padding: 1.1rem; border-radius: 14px; box-shadow: var(--shadow); }
+.booking-form { display: grid; gap: 1.25rem; max-width: 760px; margin: 0 auto; background: #10161d; border: 1px solid #ffffff12; padding: 1.75rem; border-radius: 14px; box-shadow: var(--shadow); }
+
+.booking-form h4 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.companion-entry {
+  animation: fadeIn 0.3s ease;
+}
+
+.companion-entry .remove-companion {
+  background: #ff6b6b20;
+  color: #ff6b6b;
+  border-color: #ff6b6b40;
+}
+
+.companion-entry .remove-companion:hover {
+  background: #ff6b6b30;
+}
 .form-row { display: grid; gap: .35rem; }
 .form-row.two { grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 600px) { .form-row.two { grid-template-columns: 1fr; } }

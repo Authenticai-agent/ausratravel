@@ -448,25 +448,44 @@
                                 <div id="booking-step" class="booking-step" style="display: none;">
                                     <h3>Book Your Escape</h3>
                                     <p>Tell us your preferred dates and experience. We'll confirm availability within 24–48 hours.</p>
-                                    <form class="booking-form" netlify>
-                                    <div class="form-row">
-                                        <label for="name">Full Name</label>
-                                        <input id="name" name="name" type="text" required>
+                                    <form class="booking-form" id="booking-form-main" netlify>
+                                    <h4>Primary Guest Information</h4>
+                                    
+                                    <div class="form-row two">
+                                        <div>
+                                            <label for="first-name">First Name <span class="required">*</span></label>
+                                            <input id="first-name" name="first_name" type="text" required>
+                                        </div>
+                                        <div>
+                                            <label for="last-name">Last Name <span class="required">*</span></label>
+                                            <input id="last-name" name="last_name" type="text" required>
+                                        </div>
                                     </div>
-                                    <div class="form-row">
-                                        <label for="email">Email</label>
-                                        <input id="email" name="email" type="email" required>
+                                    
+                                    <div class="form-row two">
+                                        <div>
+                                            <label for="email">Email <span class="required">*</span></label>
+                                            <input id="email" name="email" type="email" required>
+                                        </div>
+                                        <div>
+                                            <label for="phone">Phone <span class="required">*</span></label>
+                                            <input id="phone" name="phone" type="tel" required placeholder="+1 (555) 123-4567">
+                                        </div>
                                     </div>
+                                    
                                     <div class="form-row">
-                                        <label for="occupancy">Occupancy</label>
-                                        <select id="occupancy" name="occupancy" required>
-                                            <option value="double">Double (per person)</option>
-                                            <option value="single">Single</option>
-                                        </select>
+                                        <label for="address">Address <span class="required">*</span></label>
+                                        <textarea id="address" name="address" rows="2" required placeholder="Street address, City, State, ZIP/Postal code, Country"></textarea>
                                     </div>
+                                    
+                                    <hr style="border: none; border-top: 1px solid #ffffff15; margin: 1.5rem 0;">
+                                    
+                                    <h4>Trip Details</h4>
+                                    
                                     <div class="form-row">
-                                        <label for="experience">Experience</label>
+                                        <label for="experience">Experience <span class="required">*</span></label>
                                         <select id="experience" name="experience" required>
+                                            <option value="">Select an experience</option>
                                             <option value="Painting & Glass Art">Painting & Glass Art</option>
                                             <option value="Yoga with Goats">Yoga with Goats</option>
                                             <option value="Cheese & Wine">Cheese & Wine</option>
@@ -479,34 +498,107 @@
                                             <option value="Custom">Custom</option>
                                         </select>
                                     </div>
-                                    <div class="form-row two">
-                                        <div>
-                                            <label for="guests">Guests</label>
-                                            <input id="guests" name="guests" type="number" min="1" max="10" value="2" required>
-                                        </div>
-                                        <div>
-                                            <label for="dates">Preferred Dates (Trip Dates)</label>
-                                            <input id="dates" name="dates" type="text" placeholder="Select date range" autocomplete="off" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-row two">
-                                        <div>
-                                            <label for="extra-days-before">Extra Days Before Trip</label>
-                                            <input id="extra-days-before" name="extra_days_before" type="number" min="0" max="7" value="0" placeholder="0">
-                                            <small style="color: var(--muted); font-size: .85rem;">Add extra nights before your experience starts</small>
-                                        </div>
-                                        <div>
-                                            <label for="extra-days-after">Extra Days After Trip</label>
-                                            <input id="extra-days-after" name="extra_days_after" type="number" min="0" max="7" value="0" placeholder="0">
-                                            <small style="color: var(--muted); font-size: .85rem;">Add extra nights after your experience ends</small>
-                                        </div>
-                                    </div>
-                                    <div class="form-row" id="price-summary" aria-live="polite"></div>
+                                    
                                     <div class="form-row">
-                                        <label for="notes">Notes</label>
-                                        <textarea id="notes" name="notes" rows="4" placeholder="Dietary needs, room type (single/double), questions…"></textarea>
+                                        <label for="dates">Trip Dates <span class="required">*</span></label>
+                                        <input id="dates" name="dates" type="text" placeholder="Select date range (minimum 4 nights)" autocomplete="off" required>
+                                        <small style="color: var(--muted); font-size: .85rem;">Select your check-in and check-out dates</small>
                                     </div>
-                                    <button class="btn btn-primary" type="submit" id="submit-btn">Request Availability</button>
+                                    
+                                    <div class="form-row">
+                                        <label for="occupancy">Occupancy <span class="required">*</span></label>
+                                        <select id="occupancy" name="occupancy" required>
+                                            <option value="double">Double occupancy ($700/day/person)</option>
+                                            <option value="single">Single occupancy ($1,200/day/person)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <label for="total-guests">Total Number of People Traveling <span class="required">*</span></label>
+                                        <input id="total-guests" name="total_guests" type="number" min="1" max="10" value="1" required>
+                                        <small style="color: var(--muted); font-size: .85rem;">Total guests including yourself</small>
+                                    </div>
+                                    
+                                    <hr style="border: none; border-top: 1px solid #ffffff15; margin: 1.5rem 0;">
+                                    
+                                    <h4>Travel Companions</h4>
+                                    <p style="color: var(--muted); font-size: .9rem; margin-bottom: 1rem;">Add information for other people traveling with you</p>
+                                    
+                                    <div id="travel-companions-container">
+                                        <!-- Dynamic companions will be added here -->
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-secondary" id="add-companion-btn" style="margin-bottom: 1.5rem;">
+                                        + Add Person
+                                    </button>
+                                    
+                                    <hr style="border: none; border-top: 1px solid #ffffff15; margin: 1.5rem 0;">
+                                    
+                                    <h4>Add-Ons & Extensions</h4>
+                                    
+                                    <div class="form-row">
+                                        <label for="addons">Add-Ons (Optional)</label>
+                                        <select id="addons" name="addons" multiple>
+                                            <option value="">None selected</option>
+                                            <!-- Add-ons will be added dynamically later -->
+                                        </select>
+                                        <small style="color: var(--muted); font-size: .85rem;">Hold Ctrl/Cmd to select multiple options</small>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <label>
+                                            <input type="checkbox" id="need-extra-days" name="need_extra_days" value="yes">
+                                            <span style="margin-left: 0.5rem;">Do you need day(s) before or after the trip?</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div id="extra-days-section" style="display: none; margin-top: 1rem;">
+                                        <div class="form-row two">
+                                            <div>
+                                                <label for="extra-dates-before">Extra Days Before Trip</label>
+                                                <input id="extra-dates-before" name="extra_dates_before" type="text" placeholder="Select dates" autocomplete="off">
+                                                <small style="color: var(--muted); font-size: .85rem;">Select dates if you want to arrive early</small>
+                                            </div>
+                                            <div>
+                                                <label for="extra-dates-after">Extra Days After Trip</label>
+                                                <input id="extra-dates-after" name="extra_dates_after" type="text" placeholder="Select dates" autocomplete="off">
+                                                <small style="color: var(--muted); font-size: .85rem;">Select dates if you want to stay longer</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row" id="price-summary" aria-live="polite"></div>
+                                    
+                                    <hr style="border: none; border-top: 1px solid #ffffff15; margin: 1.5rem 0;">
+                                    
+                                    <h4>Additional Information</h4>
+                                    
+                                    <div class="form-row">
+                                        <label for="notes">Special Requests, Dietary Needs, or Notes</label>
+                                        <textarea id="notes" name="notes" rows="4" placeholder="Dietary restrictions, accessibility needs, special requests, questions…"></textarea>
+                                    </div>
+                                    
+                                    <hr style="border: none; border-top: 1px solid #ffffff15; margin: 1.5rem 0;">
+                                    
+                                    <h4>Payment</h4>
+                                    
+                                    <div class="form-row">
+                                        <div style="background: #0e1319; border: 1px solid #ffffff15; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+                                            <p style="margin: 0 0 0.5rem; font-weight: 600;">Deposit: $299</p>
+                                            <p style="margin: 0; color: var(--muted); font-size: 0.9rem;">This deposit secures your booking. The remaining balance will be due 7 days before your trip.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Stripe Payment Element will be inserted here -->
+                                    <div id="stripe-payment-element" style="margin-bottom: 1rem;">
+                                        <!-- Stripe Elements will create form here -->
+                                    </div>
+                                    
+                                    <div id="stripe-errors" role="alert" style="color: #ff6b6b; font-size: 0.9rem; margin-bottom: 1rem;"></div>
+                                    
+                                    <button class="btn btn-primary" type="submit" id="submit-btn">
+                                        Pay $299 Deposit & Complete Booking
+                                    </button>
                                     <div class="form-row" id="form-message" role="status" aria-live="polite"></div>
                                 </form>
                                 </div>
@@ -789,6 +881,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         // Use public Railway URL explicitly (Netlify proxy also targets the same backend)
         window.API_BASE_URL = window.API_BASE_URL || 'https://ausratravel-production.up.railway.app';

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import Stripe from 'stripe';
 
 const app = express();
 app.use(cors());
@@ -11,6 +12,8 @@ const PORT = process.env.PORT || 3001;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY;
 const TO_EMAIL = process.env.TO_EMAIL || 'jura@authenticai.ai';
 
 const supabase = SUPABASE_URL && SUPABASE_KEY 
@@ -18,10 +21,55 @@ const supabase = SUPABASE_URL && SUPABASE_KEY
   : null;
 
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
+const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY) : null;
 
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Get Stripe configuration
+app.get('/api/stripe-config', (req, res) => {
+  res.json({ 
+    publishableKey: STRIPE_PUBLISHABLE_KEY || '',
+    enabled: !!STRIPE_SECRET_KEY 
+  });
+});
+
+// Create Stripe payment intent
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, booking_data } = req.body;
+    
+    if (!stripe) {
+      return res.status(503).json({ error: 'Payment processing not configured' });
+    }
+    
+    if (!amount || amount < 100) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+    
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: parseInt(amount, 10),
+      currency: 'usd',
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        booking_type: 'deposit',
+        email: booking_data?.email || '',
+        experience: booking_data?.experience || ''
+      }
+    });
+    
+    res.json({ 
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id
+    });
+  } catch (err) {
+    console.error('Stripe payment intent error:', err);
+    res.status(500).json({ error: 'Failed to create payment intent' });
+  }
 });
 
 // Get availability (blocked date ranges)
@@ -54,15 +102,19 @@ app.get('/api/availability', async (req, res) => {
 app.post('/api/booking', async (req, res) => {
   try {
     const { 
-      name, email, experience, occupancy, guests, dates, notes,
-      physical_ability, interests, activity_level, group_preference,
-      bathroom_ack, rooming_with, travel_companions, marketing_source,
-      additional_info, extra_days_before, extra_days_after
+      first_name, last_name, name, email, phone, address,
+      experience, occupancy, total_guests, dates,
+      travel_companions, extra_days_before, extra_days_after,
+      addons, notes, questionnaire_data,
+      stripe_payment_intent_id, deposit_paid
     } = req.body;
     
-    if (!name || !email || !experience || !dates) {
+    // Validation
+    if (!first_name || !last_name || !email || !phone || !address || !experience || !dates || !total_guests) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    
+    const fullName = name || `${first_name} ${last_name}`;
     
     const [checkIn, checkOut] = dates.split(' to ');
     if (!checkIn || !checkOut) {
@@ -74,23 +126,70 @@ app.post('/api/booking', async (req, res) => {
       return res.status(400).json({ error: 'Minimum stay is 4 nights' });
     }
     
+    // Calculate pricing
+    const pricePerDay = { double: 700, single: 1200 };
+    const rate = pricePerDay[occupancy] || 700;
+    const tripTotal = rate * total_guests * nights;
+    
+    // Calculate extra days pricing
+    let extraBeforeNights = 0;
+    let extraAfterNights = 0;
+    let extraBeforeDates = null;
+    let extraAfterDates = null;
+    
+    if (extra_days_before && extra_days_before.nights) {
+      extraBeforeNights = extra_days_before.nights;
+      extraBeforeDates = extra_days_before.dates;
+    }
+    
+    if (extra_days_after && extra_days_after.nights) {
+      extraAfterNights = extra_days_after.nights;
+      extraAfterDates = extra_days_after.dates;
+    }
+    
+    const extraDaysTotal = rate * total_guests * (extraBeforeNights + extraAfterNights);
+    
+    // Calculate add-ons total (placeholder - will be calculated from addons_catalog later)
+    const addonsTotal = 0; // TODO: Calculate from addons array
+    
+    const totalAmount = tripTotal + extraDaysTotal + addonsTotal;
+    const remainingBalance = totalAmount - (deposit_paid ? 299 : 0);
+    
     // Save to Supabase
     let bookingId = null;
     if (supabase) {
+      const bookingData = {
+        first_name,
+        last_name,
+        email,
+        phone,
+        address,
+        experience,
+        occupancy,
+        total_guests: parseInt(total_guests, 10),
+        check_in: checkIn,
+        check_out: checkOut,
+        nights,
+        travel_companions: travel_companions || [],
+        extra_days_before: extraBeforeDates ? { dates: extraBeforeDates, nights: extraBeforeNights } : null,
+        extra_days_after: extraAfterDates ? { dates: extraAfterDates, nights: extraAfterNights } : null,
+        addons: addons || [],
+        notes: notes || null,
+        questionnaire_data: questionnaire_data || null,
+        deposit_amount: 299.00,
+        deposit_paid: deposit_paid || false,
+        stripe_payment_intent_id: stripe_payment_intent_id || null,
+        trip_total: tripTotal,
+        extra_days_total: extraDaysTotal,
+        addons_total: addonsTotal,
+        total_amount: totalAmount,
+        remaining_balance: remainingBalance,
+        status: deposit_paid ? 'confirmed' : 'pending'
+      };
+      
       const { data, error } = await supabase
         .from('bookings')
-        .insert({
-          name,
-          email,
-          experience,
-          occupancy,
-          guests: parseInt(guests, 10),
-          check_in: checkIn,
-          check_out: checkOut,
-          nights,
-          notes: notes || null,
-          status: 'pending'
-        })
+        .insert(bookingData)
         .select()
         .single();
       
@@ -104,29 +203,66 @@ app.post('/api/booking', async (req, res) => {
     
     // Send email via Resend
     if (resend) {
-      const pricePerDay = { double: 700, single: 1200 };
-      const rate = pricePerDay[occupancy] || 700;
-      const extraDays = (parseInt(extra_days_before || 0, 10) + parseInt(extra_days_after || 0, 10));
-      const totalNights = nights + extraDays;
-      const extraTotal = rate * parseInt(guests, 10) * extraDays;
-      const total = rate * parseInt(guests, 10) * nights + extraTotal;
       const formattedTotal = new Intl.NumberFormat('en-US', { 
         style: 'currency', 
         currency: 'USD' 
-      }).format(total);
+      }).format(totalAmount);
+      
+      const formattedDeposit = new Intl.NumberFormat('en-US', { 
+        style: 'currency', 
+        currency: 'USD' 
+      }).format(299);
+      
+      const formattedRemaining = new Intl.NumberFormat('en-US', { 
+        style: 'currency', 
+        currency: 'USD' 
+      }).format(remainingBalance);
+      
+      // Build travel companions HTML
+      let companionsHtml = '';
+      if (travel_companions && travel_companions.length > 0) {
+        companionsHtml = '<h3>Travel Companions</h3><ul>';
+        travel_companions.forEach((comp, idx) => {
+          companionsHtml += `<li><strong>Person ${idx + 1}:</strong> ${comp.first_name} ${comp.last_name}${comp.email ? ` (${comp.email})` : ''}${comp.phone ? ` - ${comp.phone}` : ''}</li>`;
+        });
+        companionsHtml += '</ul><hr>';
+      }
+      
+      // Build extra days HTML
+      let extraDaysHtml = '';
+      if (extraBeforeNights > 0 || extraAfterNights > 0) {
+        extraDaysHtml = '<h3>Extra Days</h3>';
+        if (extraBeforeNights > 0) {
+          extraDaysHtml += `<p><strong>Before trip:</strong> ${extraBeforeDates.join(' to ')} (${extraBeforeNights} nights)</p>`;
+        }
+        if (extraAfterNights > 0) {
+          extraDaysHtml += `<p><strong>After trip:</strong> ${extraAfterDates.join(' to ')} (${extraAfterNights} nights)</p>`;
+        }
+        extraDaysHtml += '<hr>';
+      }
+      
+      // Build add-ons HTML
+      let addonsHtml = '';
+      if (addons && addons.length > 0) {
+        addonsHtml = `<p><strong>Add-ons:</strong> ${addons.join(', ')}</p>`;
+      }
       
       // Build questionnaire data summary
       let questionnaireHtml = '';
-      if (physical_ability || interests || activity_level || marketing_source) {
+      if (questionnaire_data) {
         questionnaireHtml = '<h3>Questionnaire Data</h3>';
-        const interestsList = Array.isArray(interests) ? interests : (interests ? interests.split(',').map(i => i.trim()) : []);
-        if (interestsList.length > 0) questionnaireHtml += `<p><strong>Interests:</strong> ${interestsList.join(', ')}</p>`;
-        if (activity_level) questionnaireHtml += `<p><strong>Activity Level:</strong> ${activity_level}</p>`;
-        if (group_preference) questionnaireHtml += `<p><strong>Group Preference:</strong> ${group_preference}</p>`;
-        if (marketing_source) questionnaireHtml += `<p><strong>Marketing Source:</strong> ${marketing_source}</p>`;
-        if (rooming_with) questionnaireHtml += `<p><strong>Rooming With:</strong> ${rooming_with}</p>`;
-        if (travel_companions) questionnaireHtml += `<p><strong>Travel Companions:</strong> ${travel_companions}</p>`;
-        if (additional_info) questionnaireHtml += `<p><strong>Additional Info:</strong> ${additional_info}</p>`;
+        if (questionnaire_data.interests && Array.isArray(questionnaire_data.interests)) {
+          questionnaireHtml += `<p><strong>Interests:</strong> ${questionnaire_data.interests.join(', ')}</p>`;
+        }
+        if (questionnaire_data.activity_level) {
+          questionnaireHtml += `<p><strong>Activity Level:</strong> ${questionnaire_data.activity_level}</p>`;
+        }
+        if (questionnaire_data.group_preference) {
+          questionnaireHtml += `<p><strong>Group Preference:</strong> ${questionnaire_data.group_preference}</p>`;
+        }
+        if (questionnaire_data.marketing_source) {
+          questionnaireHtml += `<p><strong>Marketing Source:</strong> ${questionnaire_data.marketing_source}</p>`;
+        }
         questionnaireHtml += '<hr>';
       }
       
@@ -134,21 +270,35 @@ app.post('/api/booking', async (req, res) => {
         from: 'Authentic France <noreply@authenticai.ai>',
         to: TO_EMAIL,
         replyTo: email,
-        subject: `New Booking Request: ${experience}`,
+        subject: `${deposit_paid ? 'NEW BOOKING' : 'New Booking Request'}: ${experience}`,
         html: `
-          <h2>New Booking Request</h2>
-          <p><strong>Name:</strong> ${name}</p>
+          <h2>${deposit_paid ? 'NEW BOOKING CONFIRMED' : 'New Booking Request'}</h2>
+          <h3>Primary Guest</h3>
+          <p><strong>Name:</strong> ${fullName}</p>
           <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Address:</strong> ${address}</p>
+          ${companionsHtml}
+          <h3>Trip Details</h3>
           <p><strong>Experience:</strong> ${experience}</p>
           <p><strong>Occupancy:</strong> ${occupancy}</p>
-          <p><strong>Guests:</strong> ${guests}</p>
-          <p><strong>Dates:</strong> ${checkIn} to ${checkOut} (${nights} nights${extraDays > 0 ? ` + ${extraDays} extra nights` : ''})</p>
-          <p><strong>Estimated Total:</strong> ${formattedTotal}</p>
+          <p><strong>Total Guests:</strong> ${total_guests}</p>
+          <p><strong>Dates:</strong> ${checkIn} to ${checkOut} (${nights} nights)</p>
+          ${extraDaysHtml}
+          <h3>Pricing</h3>
+          <p><strong>Trip Total:</strong> ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tripTotal)}</p>
+          ${extraDaysTotal > 0 ? `<p><strong>Extra Days:</strong> ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(extraDaysTotal)}</p>` : ''}
+          ${addonsTotal > 0 ? `<p><strong>Add-ons:</strong> ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(addonsTotal)}</p>` : ''}
+          <p><strong>Total Amount:</strong> ${formattedTotal}</p>
+          <p><strong>Deposit:</strong> ${formattedDeposit} ${deposit_paid ? '✓ PAID' : '(pending)'}</p>
+          <p><strong>Remaining Balance:</strong> ${formattedRemaining}</p>
+          ${addonsHtml}
           ${questionnaireHtml}
-          ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
+          ${notes ? `<h3>Notes</h3><p>${notes}</p>` : ''}
+          ${stripe_payment_intent_id ? `<p><strong>Stripe Payment Intent:</strong> ${stripe_payment_intent_id}</p>` : ''}
           ${bookingId ? `<p><strong>Booking ID:</strong> ${bookingId}</p>` : ''}
           <hr>
-          <p><em>Reply to this email to respond directly to ${name}.</em></p>
+          <p><em>Reply to this email to respond directly to ${fullName}.</em></p>
         `
       });
       
@@ -156,18 +306,21 @@ app.post('/api/booking', async (req, res) => {
       await resend.emails.send({
         from: 'Authentic France <noreply@authenticai.ai>',
         to: email,
-        subject: 'Booking Request Received - Authentic France',
+        subject: deposit_paid ? 'Booking Confirmed - Authentic France' : 'Booking Request Received - Authentic France',
         html: `
-          <h2>Thank you, ${name}!</h2>
-          <p>We've received your booking request for <strong>${experience}</strong>.</p>
-          <p><strong>Details:</strong></p>
+          <h2>Thank you, ${first_name}!</h2>
+          ${deposit_paid ? '<p style="color: #39d98a; font-weight: 600;">Your booking has been confirmed! Your $299 deposit has been processed.</p>' : '<p>We\'ve received your booking request.</p>'}
+          <p><strong>Booking Details:</strong></p>
           <ul>
-            <li>Dates: ${checkIn} to ${checkOut} (${nights} nights)</li>
-            <li>Guests: ${guests} · Occupancy: ${occupancy}</li>
-            <li>Estimated Total: ${formattedTotal}</li>
+            <li><strong>Experience:</strong> ${experience}</li>
+            <li><strong>Dates:</strong> ${checkIn} to ${checkOut} (${nights} nights)</li>
+            <li><strong>Guests:</strong> ${total_guests} · Occupancy: ${occupancy}</li>
+            <li><strong>Total Amount:</strong> ${formattedTotal}</li>
+            <li><strong>Deposit:</strong> ${formattedDeposit} ${deposit_paid ? '✓ Paid' : '(pending)'}</li>
+            <li><strong>Remaining Balance:</strong> ${formattedRemaining} (due 7 days before arrival)</li>
           </ul>
-          <p>We'll review availability and respond within <strong>24–48 hours</strong>.</p>
-          <p>If you have any questions, please reply to this email.</p>
+          ${deposit_paid ? '<p>Your spot is secured! We\'ll send you trip preparation details closer to your arrival date.</p>' : '<p>We\'ll review availability and confirm your booking within <strong>24–48 hours</strong>.</p>'}
+          <p>If you have any questions, please reply to this email or call us at <strong>+1 (703) 375-9548</strong>.</p>
           <hr>
           <p><small>Authentic Experiences in South of France</small></p>
         `
@@ -356,5 +509,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Supabase: ${supabase ? 'connected' : 'not configured'}`);
   console.log(`Resend: ${resend ? 'configured' : 'not configured'}`);
+  console.log(`Stripe: ${stripe ? 'configured' : 'not configured'}`);
 });
 
