@@ -27,7 +27,8 @@ const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY) : null;
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Authentic France API',
-    version: '1.0.1',
+    version: '1.0.2',
+    status: 'running',
     endpoints: {
       health: '/health',
       stripeConfig: '/api/stripe-config',
