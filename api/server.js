@@ -5,7 +5,22 @@ import { Resend } from 'resend';
 import Stripe from 'stripe';
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow requests from Netlify and localhost
+const corsOptions = {
+  origin: [
+    'https://ausratravel.netlify.app',
+    'http://localhost:8888',
+    'http://localhost:3000',
+    'http://127.0.0.1:8888',
+    'http://127.0.0.1:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
