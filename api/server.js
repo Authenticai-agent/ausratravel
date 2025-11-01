@@ -61,6 +61,25 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Diagnostic endpoint to check environment variables (without exposing sensitive values)
+app.get('/api/diagnostics', (req, res) => {
+  res.json({
+    supabase: {
+      url: SUPABASE_URL ? 'Set' : 'Missing',
+      key: SUPABASE_KEY ? 'Set' : 'Missing',
+      keyType: SUPABASE_KEY ? (SUPABASE_KEY.startsWith('eyJ') ? 'JWT token' : 'Unknown format') : 'Not set',
+      clientInitialized: !!supabase
+    },
+    resend: {
+      configured: !!resend
+    },
+    stripe: {
+      configured: !!stripe,
+      publishableKeySet: !!STRIPE_PUBLISHABLE_KEY
+    }
+  });
+});
+
 // Get Stripe configuration
 app.get('/api/stripe-config', (req, res) => {
   res.json({ 
