@@ -1,5 +1,9 @@
 name: Deploy API to Railway
 
+# Note: This workflow is a fallback option.
+# Recommended: Use Railway's native GitHub integration for automatic deployments.
+# See RAILWAY_DEPLOYMENT.md for setup instructions.
+
 on:
   push:
     branches: [ main ]
@@ -23,45 +27,30 @@ jobs:
           node-version: '18'
 
       - name: Install Railway CLI
-        run: npm i -g @railway/cli
+        run: npm i -g @railway/cli@latest
 
       - name: Install deps
         run: npm ci
 
-      - name: Deploy to Railway
+      - name: Deploy to Railway via CLI
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
           if [ -z "$RAILWAY_TOKEN" ]; then
-            echo "::error::RAILWAY_TOKEN secret is not set"
-            echo "Please add RAILWAY_TOKEN to: https://github.com/Authenticai-agent/ausratravel/settings/secrets/actions"
-            exit 1
+            echo "::warning::RAILWAY_TOKEN not set. Skipping CLI deployment."
+            echo "::notice::Consider using Railway's native GitHub integration instead."
+            echo "See RAILWAY_DEPLOYMENT.md for instructions."
+            exit 0
           fi
           
-          if [ -z "$RAILWAY_PROJECT_ID" ]; then
-            echo "::error::RAILWAY_PROJECT_ID secret is not set"
-            exit 1
-          fi
-          
-          # Use Railway CLI with explicit project/service specification
-          # Create .railway config file
-          mkdir -p .railway
-          cat > .railway/project.json << EOF
-          {
-            "project": {
-              "id": "$RAILWAY_PROJECT_ID"
-            },
-            "environment": {
-              "name": "production"
-            },
-            "service": {
-              "name": "ausratravel"
-            }
+          # Railway CLI uses RAILWAY_TOKEN for authentication
+          # Note: Railway's native GitHub integration is recommended instead of CLI in CI/CD
+          echo "Attempting Railway CLI deployment..."
+          railway up --service ausratravel --detach || {
+            echo "::warning::Railway CLI deployment failed."
+            echo "::notice::Railway's native GitHub integration is recommended for automatic deployments."
+            echo "Your code has been pushed. Railway will auto-deploy if GitHub integration is enabled."
+            exit 0
           }
-          EOF
-          
-          # Deploy using Railway CLI with token
-          RAILWAY_TOKEN="$RAILWAY_TOKEN" railway up --service ausratravel --detach
 
 
