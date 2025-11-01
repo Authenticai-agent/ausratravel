@@ -416,6 +416,11 @@ app.post('/api/reviews', async (req, res) => {
       return res.status(503).json({ error: 'Database not configured' });
     }
     
+    console.log('Attempting to insert review:', { name, rating: parseInt(rating, 10), status: 'pending' });
+    console.log('Supabase client initialized:', !!supabase);
+    console.log('Supabase URL:', SUPABASE_URL ? 'Set' : 'Missing');
+    console.log('Supabase Key type:', SUPABASE_KEY ? (SUPABASE_KEY.startsWith('eyJ') ? 'JWT (likely service role)' : 'Unknown format') : 'Missing');
+    
     const { data, error } = await supabase
       .from('reviews')
       .insert({
@@ -429,10 +434,22 @@ app.post('/api/reviews', async (req, res) => {
     
     if (error) {
       console.error('Supabase error inserting review:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
       console.error('Error details:', JSON.stringify(error, null, 2));
+      console.error('Error hint:', error.hint);
+      
+      // Check if it's an RLS issue
+      if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
+        console.error('⚠️ RLS (Row Level Security) is blocking the insert!');
+        console.error('Solution: Run api/fix-reviews-rls.sql in Supabase or ensure SUPABASE_SERVICE_ROLE_KEY is set correctly');
+      }
+      
       return res.status(500).json({ 
         error: 'Failed to save review to database',
-        details: error.message 
+        details: error.message,
+        code: error.code,
+        hint: error.hint
       });
     }
     
