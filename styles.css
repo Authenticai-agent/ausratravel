@@ -113,8 +113,8 @@ body {
     padding: 3rem 0 2rem;
   }
 }
-.hero h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.1; margin: 0 0 .75rem; }
-.subtitle { color: var(--text); max-width: 60ch; margin: 0 0 1.25rem; font-size: clamp(0.95rem, 2vw, 1.05rem); }
+.hero h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.1; margin: 0 0 .75rem; color: #1e3a5f; }
+.subtitle { color: #2c3e50; max-width: 60ch; margin: 0 0 1.25rem; font-size: clamp(0.95rem, 2vw, 1.05rem); }
 .hero-cta { display: flex; gap: .8rem; flex-wrap: wrap; }
 @media (max-width: 480px) {
   .hero-cta {
