@@ -1,10 +1,17 @@
+-- Create ENUM type for review status (shows as dropdown in Supabase Table Editor)
+DO $$ BEGIN
+  CREATE TYPE review_status_enum AS ENUM ('pending', 'approved', 'published', 'rejected');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
 -- Create reviews table in Supabase
 CREATE TABLE IF NOT EXISTS reviews (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   review TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'published', 'rejected')),
+  status review_status_enum NOT NULL DEFAULT 'pending'::review_status_enum,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
