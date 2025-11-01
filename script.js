@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       const targetContent = document.getElementById(`tab-${tabId}`);
       if (targetContent) targetContent.classList.add('active');
+      
+      // Reinitialize calendar when booking tab is clicked
+      if (tabId === 'booking') {
+        setTimeout(() => {
+          flatpickrInit();
+        }, 100);
+      }
     });
   });
 
@@ -96,6 +103,11 @@ const flatpickrInit = async () => {
   if (typeof flatpickr === 'undefined') return;
   const input = document.getElementById('dates');
   if (!input) return;
+
+  // Destroy existing Flatpickr instance if it exists
+  if (input._flatpickr) {
+    input._flatpickr.destroy();
+  }
 
   // Fetch blocked dates from Railway API
   let disabledRanges = [];
@@ -615,9 +627,11 @@ const proceedToBooking = () => {
     // Switch to booking tab
     const bookingTabBtn = document.querySelector('[data-tab="booking"]');
     if (bookingTabBtn) bookingTabBtn.click();
+    // Reinitialize calendar when booking tab becomes visible
     setTimeout(() => {
+      flatpickrInit();
       bookingStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    }, 200);
   }
 };
 
