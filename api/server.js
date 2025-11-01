@@ -400,7 +400,7 @@ app.get('/api/reviews', async (req, res) => {
     const { data, error } = await supabase
       .from('reviews')
       .select('*')
-      .eq('status', 'approved')
+      .in('status', ['approved', 'published']) // Show both approved and published reviews
       .order('created_at', { ascending: false });
     
     if (error) throw error;
