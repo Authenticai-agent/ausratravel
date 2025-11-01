@@ -12,11 +12,13 @@ CHECK (status IN ('pending', 'approved', 'published', 'rejected'));
 
 -- Verify the change
 SELECT 
-  constraint_name, 
-  check_clause 
-FROM information_schema.table_constraints 
-WHERE table_name = 'reviews' 
-AND constraint_type = 'CHECK';
+  tc.constraint_name, 
+  cc.check_clause 
+FROM information_schema.table_constraints tc
+JOIN information_schema.check_constraints cc 
+  ON tc.constraint_name = cc.constraint_name
+WHERE tc.table_name = 'reviews' 
+AND tc.constraint_type = 'CHECK';
 
 -- Now you can use 'published' status!
 -- Example: UPDATE reviews SET status = 'published' WHERE id = 'your-review-id';
