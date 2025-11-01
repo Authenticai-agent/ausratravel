@@ -411,24 +411,37 @@ app.post('/api/reviews', async (req, res) => {
     
     // Save to Supabase
     let reviewId = null;
-    if (supabase) {
-      const { data, error } = await supabase
-        .from('reviews')
-        .insert({
-          name,
-          rating: parseInt(rating, 10),
-          review,
-          status: 'pending' // Reviews need approval
-        })
-        .select()
-        .single();
-      
-      if (error) {
-        console.error('Supabase error:', error);
-        // Continue even if DB fails
-      } else {
-        reviewId = data?.id;
-      }
+    if (!supabase) {
+      console.error('Supabase client not initialized - check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables');
+      return res.status(503).json({ error: 'Database not configured' });
+    }
+    
+    const { data, error } = await supabase
+      .from('reviews')
+      .insert({
+        name,
+        rating: parseInt(rating, 10),
+        review,
+        status: 'pending' // Reviews need approval
+      })
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Supabase error inserting review:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      return res.status(500).json({ 
+        error: 'Failed to save review to database',
+        details: error.message 
+      });
+    }
+    
+    if (data) {
+      reviewId = data.id;
+      console.log(`Review saved successfully with ID: ${reviewId}`);
+    } else {
+      console.error('Review insert returned no data');
+      return res.status(500).json({ error: 'Failed to save review - no data returned' });
     }
     
     // Send email notification to admin
