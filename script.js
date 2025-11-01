@@ -18,9 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Reinitialize calendar when booking tab is clicked
       if (tabId === 'booking') {
-        setTimeout(() => {
-          flatpickrInit();
-        }, 100);
+        // If booking step is not visible, ensure it's shown (in case user navigates directly)
+        const bookingStep = document.getElementById('booking-step');
+        const questionnaireStep = document.getElementById('questionnaire-step');
+        // Only auto-show booking if coming from direct tab click (not from questionnaire flow)
+        if (bookingStep && bookingStep.style.display === 'none' && questionnaireStep && !questionnaireStep.classList.contains('active')) {
+          // User clicked tab directly - show booking form
+          proceedToBooking();
+        } else {
+          // Just reinit calendar
+          setTimeout(() => {
+            flatpickrInit();
+          }, 100);
+        }
       }
     });
   });
@@ -71,14 +81,22 @@ document.addEventListener('click', function (e) {
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('[data-experience]');
   if (!btn) return;
+  e.preventDefault();
   const experience = btn.getAttribute('data-experience');
   const select = document.getElementById('experience');
-  if (!select) return;
-  const option = Array.from(select.options).find(o => o.value === experience);
-  if (option) {
-    select.value = option.value;
-    const book = document.getElementById('book');
-    if (book) book.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (select) {
+    const option = Array.from(select.options).find(o => o.value === experience);
+    if (option) select.value = option.value;
+  }
+  
+  // Switch to booking tab and show booking form directly (skip questionnaire)
+  const bookingTabBtn = document.querySelector('[data-tab="booking"]');
+  if (bookingTabBtn) {
+    bookingTabBtn.click();
+    // Skip questionnaire and go directly to booking
+    setTimeout(() => {
+      proceedToBooking();
+    }, 100);
   }
 });
 
@@ -621,9 +639,13 @@ const showRecommendations = (recommended) => {
 const proceedToBooking = () => {
   const questionnaireStep = document.getElementById('questionnaire-step');
   const bookingStep = document.getElementById('booking-step');
-  if (questionnaireStep) questionnaireStep.classList.remove('active');
+  if (questionnaireStep) {
+    questionnaireStep.classList.remove('active');
+    questionnaireStep.style.display = 'none';
+  }
   if (bookingStep) {
     bookingStep.classList.add('active');
+    bookingStep.style.display = 'block';
     // Switch to booking tab
     const bookingTabBtn = document.querySelector('[data-tab="booking"]');
     if (bookingTabBtn) bookingTabBtn.click();
