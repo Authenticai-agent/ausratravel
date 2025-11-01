@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS custom_requests (
   email TEXT NOT NULL,
   notes TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'reviewed', 'contacted', 'completed', 'archived')),
+  admin_comments TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
