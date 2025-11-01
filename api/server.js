@@ -10,6 +10,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'https://ausratravel.netlify.app',
+    'https://4apero.netlify.app',
     'http://localhost:8888',
     'http://localhost:3000',
     'http://127.0.0.1:8888',
