@@ -21,22 +21,32 @@ BEGIN
     AND column_name = 'status' 
     AND data_type = 'text'
   ) THEN
-    -- Convert TEXT to ENUM
+    -- Step 2a: Drop the default value temporarily
+    ALTER TABLE reviews 
+    ALTER COLUMN status DROP DEFAULT;
+    
+    -- Step 2b: Drop the old CHECK constraint if it exists
+    ALTER TABLE reviews 
+    DROP CONSTRAINT IF EXISTS reviews_status_check;
+    
+    -- Step 2c: Convert TEXT to ENUM
     ALTER TABLE reviews 
     ALTER COLUMN status TYPE review_status_enum 
     USING status::review_status_enum;
     
-    -- Drop the old CHECK constraint if it exists
+    -- Step 2d: Restore the default value with proper ENUM cast
     ALTER TABLE reviews 
-    DROP CONSTRAINT IF EXISTS reviews_status_check;
+    ALTER COLUMN status SET DEFAULT 'pending'::review_status_enum;
+    
   ELSIF EXISTS (
     SELECT 1 
     FROM information_schema.columns 
     WHERE table_name = 'reviews' 
     AND column_name = 'status'
+    AND udt_name = 'review_status_enum'
   ) THEN
-    -- Column exists but might already be ENUM or different type
-    RAISE NOTICE 'Column status already exists. Type conversion may not be needed.';
+    -- Column already exists and is ENUM type
+    RAISE NOTICE 'Column status is already ENUM type. No conversion needed.';
   ELSE
     -- Column doesn't exist, create it
     ALTER TABLE reviews 
