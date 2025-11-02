@@ -9,12 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Remove active class from all buttons and contents
       tabBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
+      tabContents.forEach(c => {
+        c.classList.remove('active');
+        c.style.display = 'none'; // Explicitly hide all tabs
+      });
       
       // Add active class to clicked button and corresponding content
       btn.classList.add('active');
       const targetContent = document.getElementById(`tab-${tabId}`);
-      if (targetContent) targetContent.classList.add('active');
+      if (targetContent) {
+        targetContent.classList.add('active');
+        targetContent.style.display = 'block'; // Explicitly show active tab
+      }
       
       // Reinitialize calendar when booking tab is clicked
       if (tabId === 'booking') {
