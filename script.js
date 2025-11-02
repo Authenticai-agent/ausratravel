@@ -35,6 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Subtabs functionality for About Us section
+  const subtabBtns = document.querySelectorAll('.subtab-btn');
+  const subtabContents = document.querySelectorAll('.subtab-content');
+
+  subtabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const subtabId = btn.getAttribute('data-subtab');
+      
+      // Remove active class from all subtab buttons and contents
+      subtabBtns.forEach(b => b.classList.remove('active'));
+      subtabContents.forEach(c => {
+        c.classList.remove('active');
+        c.style.display = 'none';
+      });
+      
+      // Add active class to clicked button and show corresponding content
+      btn.classList.add('active');
+      const targetSubtabContent = document.getElementById(`subtab-${subtabId}`);
+      if (targetSubtabContent) {
+        targetSubtabContent.classList.add('active');
+        targetSubtabContent.style.display = 'block';
+      }
+    });
+  });
+
   // Handle hash navigation to tabs
   const hash = window.location.hash;
   if (hash && hash.startsWith('#tab-')) {

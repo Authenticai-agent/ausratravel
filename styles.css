@@ -1388,6 +1388,60 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
   transform: translateY(0);
 }
 
+/* Subtabs Navigation */
+.subtabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  border-bottom: 2px solid var(--border);
+  margin: 2rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.subtab-btn {
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.subtab-btn:hover {
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.subtab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.subtab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.subtab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Interactive Day Trips Map */
 .day-trips-map-container {
   max-width: 1000px;
