@@ -1434,4 +1434,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  
+  // Handle cancellation policy link click
+  const cancellationLink = document.getElementById('cancellation-policy-link');
+  if (cancellationLink) {
+    cancellationLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pricingTabBtn = document.querySelector('[data-tab="pricing"]');
+      if (pricingTabBtn) {
+        pricingTabBtn.click();
+        setTimeout(() => {
+          const details = document.querySelector('.cancellation-details');
+          if (details) {
+            details.open = true;
+            details.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }
+    });
+  }
 });
