@@ -159,7 +159,7 @@ const flatpickrInit = async () => {
 
 const pricePerDay = {
   double: 700, // per person per day
-  single: 1200
+  single: 900
 };
 
 const dayDiff = (start, end) => {
