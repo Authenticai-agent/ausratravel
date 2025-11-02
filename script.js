@@ -1266,29 +1266,29 @@ function addCompanionField() {
   companionDiv.className = 'companion-entry';
   companionDiv.setAttribute('data-companion-id', companionCount);
   companionDiv.innerHTML = `
-    <div style="background: #0e1319; border: 1px solid #ffffff15; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+    <div style="background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h5 style="margin: 0; font-size: 1rem;">Person ${companionCount}</h5>
-        <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">Remove</button>
+        <h5 style="margin: 0; font-size: 1rem; color: var(--text); font-weight: 600;">Person ${companionCount}</h5>
+        <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.4rem 0.75rem; font-size: 0.85rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Remove</button>
       </div>
       <div class="form-row two">
         <div>
-          <label>First Name <span class="required">*</span></label>
-          <input type="text" name="companion_first_name_${companionCount}" required>
+          <label style="color: var(--text); font-weight: 600;">First Name <span class="required">*</span></label>
+          <input type="text" name="companion_first_name_${companionCount}" required style="background: var(--card); border: 1px solid var(--border); color: var(--text);">
         </div>
         <div>
-          <label>Last Name <span class="required">*</span></label>
-          <input type="text" name="companion_last_name_${companionCount}" required>
+          <label style="color: var(--text); font-weight: 600;">Last Name <span class="required">*</span></label>
+          <input type="text" name="companion_last_name_${companionCount}" required style="background: var(--card); border: 1px solid var(--border); color: var(--text);">
         </div>
       </div>
       <div class="form-row two">
         <div>
-          <label>Email</label>
-          <input type="email" name="companion_email_${companionCount}">
+          <label style="color: var(--text); font-weight: 600;">Email</label>
+          <input type="email" name="companion_email_${companionCount}" style="background: var(--card); border: 1px solid var(--border); color: var(--text);">
         </div>
         <div>
-          <label>Phone</label>
-          <input type="tel" name="companion_phone_${companionCount}">
+          <label style="color: var(--text); font-weight: 600;">Phone</label>
+          <input type="tel" name="companion_phone_${companionCount}" style="background: var(--card); border: 1px solid var(--border); color: var(--text);">
         </div>
       </div>
     </div>
