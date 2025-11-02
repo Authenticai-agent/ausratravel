@@ -742,16 +742,16 @@ body {
   background-size: cover; 
   background-position: center; 
 }
-.media-art { background-image: url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop'); }
+.media-art { background-image: url('/assets/paintingandglassart.jpg'); }
 .media-yoga { background-image: url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1600&auto=format&fit=crop'); }
 .media-wine { background-image: url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1600&auto=format&fit=crop'); }
 .media-meditation { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop'); }
 .media-solo { background-image: url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop'); }
-.media-perfume { background-image: url('https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1600&auto=format&fit=crop'); }
-.media-olive { background-image: url('https://images.unsplash.com/photo-1599599810769-bcde5a160d32?q=80&w=1600&auto=format&fit=crop'); }
-.media-lavender { background-image: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=1600&auto=format&fit=crop'); }
-.media-heritage { background-image: url('https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?q=80&w=1600&auto=format&fit=crop'); }
-.media-truffle { background-image: url('https://images.unsplash.com/photo-1605552660834-f2e5c8b54c09?q=80&w=1600&auto=format&fit=crop'); }
+.media-perfume { background-image: url('/assets/perfumemaking.jpg'); }
+.media-olive { background-image: url('/assets/oliveoilmaking.jpg'); }
+.media-lavender { background-image: url('/assets/lavenderfields.jpg'); }
+.media-heritage { background-image: url('/assets/gorges-du-verdon-provence-france-europe-34063034.webp'); }
+.media-truffle { background-image: url('/assets/truffelhunt.avif'); }
 
 .card-body { 
   padding: 1.5rem 1.75rem; 
