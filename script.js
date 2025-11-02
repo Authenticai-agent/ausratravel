@@ -1440,8 +1440,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancellationModal = document.getElementById('cancellation-policy-modal');
   const closeCancellationModal = document.getElementById('close-cancellation-modal');
   
+  // Store scroll position and ensure booking tab is active
+  let scrollPosition = 0;
+  let bookingTabWasActive = false;
+  
   function showCancellationModal() {
     if (cancellationModal) {
+      // Save current scroll position
+      scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Check if booking tab is currently active
+      const bookingTabBtn = document.querySelector('[data-tab="booking"]');
+      bookingTabWasActive = bookingTabBtn && bookingTabBtn.classList.contains('active');
+      
+      // Ensure booking tab is active before showing modal
+      if (!bookingTabWasActive && bookingTabBtn) {
+        bookingTabBtn.click();
+      }
+      
       cancellationModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
@@ -1451,6 +1467,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cancellationModal) {
       cancellationModal.style.display = 'none';
       document.body.style.overflow = '';
+      
+      // Ensure booking tab is still active
+      const bookingTabBtn = document.querySelector('[data-tab="booking"]');
+      if (!bookingTabWasActive && bookingTabBtn) {
+        // If booking tab wasn't active before, don't switch to it
+        // But if it was, make sure it stays active
+      } else if (bookingTabBtn && !bookingTabBtn.classList.contains('active')) {
+        bookingTabBtn.click();
+      }
+      
+      // Restore scroll position after a brief delay to ensure layout is stable
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollPosition,
+          behavior: 'instant'
+        });
+      }, 10);
     }
   }
   
@@ -1474,10 +1507,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Close modal on Escape key
+  // Close modal on Escape key (only if cancellation modal is open)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && cancellationModal && cancellationModal.style.display !== 'none') {
-      hideCancellationModal();
+    if (e.key === 'Escape') {
+      // Check which modal is open - prioritize custom form modal if both could be open
+      const customFormModal = document.getElementById('custom-form-modal');
+      if (customFormModal && customFormModal.style.display !== 'none') {
+        // Let custom form modal handle its own Escape
+        return;
+      }
+      // Close cancellation modal if it's open
+      if (cancellationModal && cancellationModal.style.display !== 'none') {
+        e.preventDefault();
+        hideCancellationModal();
+      }
     }
   });
 });
