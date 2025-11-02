@@ -1244,7 +1244,7 @@ function initDayTripsMap() {
     timeLabel.setAttribute('fill', '#6b7280');
     const hours = Math.floor(dest.driveTime / 60);
     const minutes = dest.driveTime % 60;
-    timeLabel.textContent = minutes >= 30 ? `${hours}h${minutes}` : `${hours}h${minutes}`;
+    timeLabel.textContent = minutes === 0 ? `${hours}h` : minutes < 10 ? `${hours}h0${minutes}` : `${hours}h${minutes}`;
     destGroup.appendChild(timeLabel);
 
     // Add click handler
