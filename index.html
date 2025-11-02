@@ -170,7 +170,7 @@
                                             <strong>Deposit:</strong> $299 secures your spot (fully refundable if cancelled 30+ days before trip start)
                                         </div>
                                         <div class="policy-item">
-                                            <strong>Final payment:</strong> Remaining balance due 7 days before arrival
+                                            <strong>Final payment:</strong> Remaining balance due 30 days before arrival
                                         </div>
                                         <div class="policy-item">
                                             <strong>Cancellation 30+ days:</strong> 100% deposit refunded, or 80% of fully paid trips (20% covers preparation costs)
@@ -858,8 +858,8 @@
                                     
                                     <div class="form-row">
                                         <label for="dates">Trip Dates <span class="required">*</span></label>
-                                        <input id="dates" name="dates" type="text" placeholder="Select date range (minimum 4 nights)" autocomplete="off" required>
-                                        <small style="color: var(--muted); font-size: .85rem;">Select your check-in and check-out dates</small>
+                                        <input id="dates" name="dates" type="text" placeholder="Select date range" autocomplete="off" required>
+                                        <small style="color: var(--muted); font-size: .85rem;">Select your dates from the links above, just click on Available dates and they will be populated in the trip dates.</small>
                                     </div>
                                     
                                     <div class="form-row">
@@ -942,7 +942,7 @@
                                     <div class="form-row">
                                         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
                                             <p style="margin: 0 0 0.5rem; font-weight: 600; color: var(--text);">Deposit: $299</p>
-                                            <p style="margin: 0; color: var(--text); font-size: 0.9rem;">This deposit secures your booking. The remaining balance will be due 7 days before your trip.</p>
+                                            <p style="margin: 0; color: var(--text); font-size: 0.9rem;">This deposit secures your booking. The remaining balance will be due 30 days before your trip. (If you need to cancel, please see the <a href="#tab-pricing" onclick="document.querySelector('[data-tab=\"pricing\"]').click(); setTimeout(() => { const details = document.querySelector('.cancellation-details'); if(details) details.open = true; }, 300); return false;" style="color: var(--primary); text-decoration: underline;">cancellation policy</a>.)</p>
                                         </div>
                                     </div>
                                     

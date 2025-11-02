@@ -315,6 +315,7 @@ function showAvailableDates(experienceName) {
     });
     link.addEventListener('click', function(e) {
       e.preventDefault();
+      // 4 days/3 nights package: start date + 3 days = end date (check-in day 1, check-out day 4)
       const endDate = new Date(dateItem.start);
       endDate.setDate(endDate.getDate() + 3);
       const dateInput = document.getElementById('dates');
@@ -473,9 +474,13 @@ const recalcPrice = () => {
   const nights = dayDiff(parts[0], parts[1]);
   if (!Number.isFinite(nights) || nights <= 0) { summary.textContent = ''; return; }
 
-  if (nights < 4) {
-    summary.innerHTML = `<span style="color:#ffb648">Minimum stay is 4 nights. You selected ${nights}.</span>`;
-    return;
+  // Packages are 4 days/3 nights - ensure dates are valid
+  if (nights < 3 || nights > 4) {
+    // Show warning if dates don't match standard package
+    if (nights !== 3) {
+      summary.innerHTML = `<span style="color:#ffb648">We have 4 days/3 nights packages. Please select dates that match this duration.</span>`;
+      return;
+    }
   }
 
   const rate = pricePerDay[occupancy];
@@ -603,15 +608,18 @@ if (form) {
       payload.questionnaire_data = JSON.parse(questionnaireData);
     }
 
-    // Validate minimum nights
+    // Validate dates match 4 days/3 nights packages
     const parts = (payload.dates || '').split(' to ');
-    if (parts.length === 2 && dayDiff(parts[0], parts[1]) < 4) {
-      if (msg) {
-        msg.textContent = 'Minimum stay is 4 nights.';
-        msg.className = 'form-message error';
+    if (parts.length === 2) {
+      const nights = dayDiff(parts[0], parts[1]);
+      if (nights !== 3 && nights !== 4) {
+        if (msg) {
+          msg.textContent = 'We have 4 days/3 nights packages. Please select dates that match this duration, or contact us for custom dates.';
+          msg.className = 'form-message error';
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Pay $299 Deposit & Complete Booking'; }
+        return;
       }
-      if (btn) { btn.disabled = false; btn.textContent = 'Pay $299 Deposit & Complete Booking'; }
-      return;
     }
 
     try {
