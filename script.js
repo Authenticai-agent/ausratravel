@@ -77,6 +77,234 @@ document.addEventListener('click', function (e) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
+/* Generate available dates based on experience schedule */
+function generateAvailableDates(experienceName) {
+  const dates = [];
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const nextYear = currentYear + 1;
+  
+  // Helper to get first day of week (Monday = 1)
+  function getWeekStart(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+    return new Date(d.setDate(diff));
+  }
+  
+  // Helper to format date range
+  function formatDateRange(start) {
+    const end = new Date(start);
+    end.setDate(end.getDate() + 3); // 4 days, 3 nights
+    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const year = start.getFullYear() !== now.getFullYear() ? `, ${start.getFullYear()}` : '';
+    return `${startStr}–${endStr}${year}`;
+  }
+  
+  // Generate dates for next 18 months
+  for (let year = currentYear; year <= nextYear; year++) {
+    for (let month = 1; month <= 12; month++) {
+      const firstDay = new Date(year, month - 1, 1);
+      const lastDay = new Date(year, month, 0);
+      
+      // Get first Monday of month (week 1)
+      let firstMonday = getWeekStart(firstDay);
+      if (firstMonday.getMonth() !== month - 1) {
+        firstMonday = new Date(firstMonday);
+        firstMonday.setDate(firstMonday.getDate() + 7);
+      }
+      
+      // Calculate week dates
+      const week1Start = new Date(firstMonday);
+      const week2Start = new Date(firstMonday);
+      week2Start.setDate(week2Start.getDate() + 7);
+      const week3Start = new Date(week2Start);
+      week3Start.setDate(week3Start.getDate() + 7);
+      const week4Start = new Date(week3Start);
+      week4Start.setDate(week4Start.getDate() + 7);
+      
+      // Skip if week start is in the past
+      const skipIfPast = (date) => date > now;
+      
+      // Painting: week 1 (Jan, Feb, Mar, Oct, Nov, Dec)
+      if (experienceName === 'Painting & Glass Art' && [1, 2, 3, 10, 11, 12].includes(month)) {
+        if (skipIfPast(week1Start)) dates.push({ start: new Date(week1Start), label: formatDateRange(week1Start) });
+      }
+      
+      // Yoga: week 1 (Apr, May, Sep)
+      if (experienceName === 'Yoga with Goats' && [4, 5, 9].includes(month)) {
+        if (skipIfPast(week1Start)) dates.push({ start: new Date(week1Start), label: formatDateRange(week1Start) });
+      }
+      
+      // Cheese & Wine: week 2 every month except June, July, August
+      if (experienceName === 'Cheese & Wine' && ![6, 7, 8].includes(month)) {
+        if (skipIfPast(week2Start)) dates.push({ start: new Date(week2Start), label: formatDateRange(week2Start) });
+      }
+      
+      // Meditation: week 3 (May, Apr, Sep, Oct, Nov)
+      if (experienceName === 'Meditation & Mindfulness' && [4, 5, 9, 10, 11].includes(month)) {
+        if (skipIfPast(week3Start)) dates.push({ start: new Date(week3Start), label: formatDateRange(week3Start) });
+      }
+      
+      // Leave Me Alone: week 3 (Jan, Feb, Mar, Dec)
+      if (experienceName === 'Leave Me Alone' && [1, 2, 3, 12].includes(month)) {
+        if (skipIfPast(week3Start)) dates.push({ start: new Date(week3Start), label: formatDateRange(week3Start) });
+      }
+      
+      // Truffles: week 4 (Mar, Apr, Sep, Oct)
+      if (experienceName === 'Truffle Hunting' && [3, 4, 9, 10].includes(month)) {
+        if (skipIfPast(week4Start)) dates.push({ start: new Date(week4Start), label: formatDateRange(week4Start) });
+      }
+      
+      // Olive making: week 4 (August: together with lavender)
+      if (experienceName === 'Olive Oil Workshop' && month === 8) {
+        if (skipIfPast(week4Start)) dates.push({ start: new Date(week4Start), label: formatDateRange(week4Start) });
+      }
+      
+      // Lavender: all weeks in June, July, August
+      if (experienceName === 'Lavender Workshop' && [6, 7, 8].includes(month)) {
+        [week1Start, week2Start, week3Start, week4Start].forEach(weekStart => {
+          if (skipIfPast(weekStart)) dates.push({ start: new Date(weekStart), label: formatDateRange(weekStart) });
+        });
+      }
+      
+      // Verdon (Castellane Heritage): all remaining weeks (we'll add this after calculating others)
+      // Perfume Making: weeks left unused (calculated dynamically)
+    }
+  }
+  
+  // Castellane Heritage & Verdon Discovery: Fill remaining weeks (simplified - show all weeks for now)
+  if (experienceName === 'Castellane Heritage') {
+    for (let year = currentYear; year <= nextYear; year++) {
+      for (let month = 1; month <= 12; month++) {
+        const firstDay = new Date(year, month - 1, 1);
+        let firstMonday = getWeekStart(firstDay);
+        if (firstMonday.getMonth() !== month - 1) {
+          firstMonday = new Date(firstMonday);
+          firstMonday.setDate(firstMonday.getDate() + 7);
+        }
+        for (let week = 0; week < 4; week++) {
+          const weekStart = new Date(firstMonday);
+          weekStart.setDate(weekStart.getDate() + (week * 7));
+          // Skip if already allocated or in the past
+          if (skipIfPast(weekStart)) {
+            dates.push({ start: new Date(weekStart), label: formatDateRange(weekStart) });
+          }
+        }
+      }
+    }
+  }
+  
+  // Perfume Making: Add dates for remaining unused weeks (simplified - show weeks 2-4 in months not covered)
+  if (experienceName === 'Perfume Making Grasse') {
+    for (let year = currentYear; year <= nextYear; year++) {
+      for (let month = 1; month <= 12; month++) {
+        // Skip June, July, August (lavender season)
+        if ([6, 7, 8].includes(month)) continue;
+        
+        const firstDay = new Date(year, month - 1, 1);
+        let firstMonday = getWeekStart(firstDay);
+        if (firstMonday.getMonth() !== month - 1) {
+          firstMonday = new Date(firstMonday);
+          firstMonday.setDate(firstMonday.getDate() + 7);
+        }
+        
+        // Add weeks 2, 3, 4 for most months (week 1 is often taken)
+        const week2Start = new Date(firstMonday);
+        week2Start.setDate(week2Start.getDate() + 7);
+        const week3Start = new Date(week2Start);
+        week3Start.setDate(week3Start.getDate() + 7);
+        const week4Start = new Date(week3Start);
+        week4Start.setDate(week4Start.getDate() + 7);
+        
+        // Skip week 2 if it's Cheese & Wine month (already covered)
+        if (![6, 7, 8].includes(month) && skipIfPast(week2Start)) {
+          // Only add if not already in dates (simplified)
+          dates.push({ start: new Date(week2Start), label: formatDateRange(week2Start) });
+        }
+        
+        // Add week 3 if not meditation or leave me alone
+        if (![4, 5, 9, 10, 11].includes(month) && ![1, 2, 3, 12].includes(month) && skipIfPast(week3Start)) {
+          dates.push({ start: new Date(week3Start), label: formatDateRange(week3Start) });
+        }
+        
+        // Add week 4 if not truffles or olive
+        if (![3, 4, 9, 10].includes(month) && month !== 8 && skipIfPast(week4Start)) {
+          dates.push({ start: new Date(week4Start), label: formatDateRange(week4Start) });
+        }
+      }
+    }
+  }
+  
+  // Sort dates and limit to next 12 months
+  dates.sort((a, b) => a.start - b.start);
+  const oneYearFromNow = new Date(now);
+  oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+  return dates.filter(d => d.start <= oneYearFromNow);
+}
+
+/* Display available dates as clickable links */
+function showAvailableDates(experienceName) {
+  const container = document.getElementById('available-dates-container');
+  const list = document.getElementById('available-dates-list');
+  if (!container || !list) return;
+  
+  const dates = generateAvailableDates(experienceName);
+  
+  if (dates.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  list.innerHTML = '';
+  dates.forEach(dateItem => {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.className = 'date-link';
+    link.textContent = dateItem.label;
+    link.style.cssText = `
+      display: block;
+      padding: 0.75rem 1rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      font-weight: 500;
+    `;
+    link.addEventListener('mouseenter', function() {
+      this.style.background = 'rgba(37, 99, 235, 0.08)';
+      this.style.borderColor = 'var(--primary)';
+    });
+    link.addEventListener('mouseleave', function() {
+      this.style.background = 'var(--bg-elev)';
+      this.style.borderColor = 'var(--border)';
+    });
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const endDate = new Date(dateItem.start);
+      endDate.setDate(endDate.getDate() + 3);
+      const dateInput = document.getElementById('dates');
+      if (dateInput) {
+        const startStr = dateItem.start.toISOString().split('T')[0];
+        const endStr = endDate.toISOString().split('T')[0];
+        dateInput.value = `${startStr} to ${endStr}`;
+        if (dateInput._flatpickr) {
+          dateInput._flatpickr.setDate([new Date(startStr), new Date(endStr)], true);
+        }
+        recalcPrice();
+      }
+      // Scroll to form
+      dateInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    list.appendChild(link);
+  });
+  
+  container.style.display = 'block';
+}
+
 /* Autofill experience in booking form from CTA buttons */
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('[data-experience]');
@@ -96,9 +324,25 @@ document.addEventListener('click', function (e) {
     // Skip questionnaire and go directly to booking
     setTimeout(() => {
       proceedToBooking();
+      // Show available dates for this experience
+      showAvailableDates(experience);
     }, 100);
   }
 });
+
+// Listen for experience dropdown changes
+const experienceSelect = document.getElementById('experience');
+if (experienceSelect) {
+  experienceSelect.addEventListener('change', function() {
+    const selected = this.value;
+    if (selected) {
+      showAvailableDates(selected);
+    } else {
+      const container = document.getElementById('available-dates-container');
+      if (container) container.style.display = 'none';
+    }
+  });
+}
 
 /* Details open/close UX: close others in the same card */
 document.querySelectorAll('.card .details summary').forEach(summary => {

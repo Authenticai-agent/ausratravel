@@ -516,7 +516,15 @@
 
                                 <div id="booking-step" class="booking-step" style="display: none;">
                                     <h3>Book Your Escape</h3>
-                                    <p>Tell us your preferred dates and experience. We'll confirm availability within 24–48 hours.</p>
+                                    <p>Select an experience to see available dates, or fill out the form below.</p>
+                                    
+                                    <div id="available-dates-container" style="display: none; margin-bottom: 2rem;">
+                                        <h4 style="margin-bottom: 1rem; color: var(--text);">Available Dates</h4>
+                                        <div id="available-dates-list" style="display: grid; gap: 0.5rem; margin-bottom: 1.5rem;">
+                                            <!-- Date links will be generated here -->
+                                        </div>
+                                    </div>
+                                    
                                     <form class="booking-form" id="booking-form-main" netlify>
                                     <h4>Primary Guest Information</h4>
                                     

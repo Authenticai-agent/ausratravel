@@ -742,16 +742,16 @@ body {
   background-size: cover; 
   background-position: center; 
 }
-.media-art { background-image: url('./assets/paintingandglassart.jpg'); }
+.media-art { background-image: url('/assets/paintingandglassart.jpg'); }
 .media-yoga { background-image: url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1600&auto=format&fit=crop'); }
 .media-wine { background-image: url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1600&auto=format&fit=crop'); }
 .media-meditation { background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop'); }
 .media-solo { background-image: url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop'); }
-.media-perfume { background-image: url('./assets/perfumemaking.jpg'); }
-.media-olive { background-image: url('./assets/oliveoilmaking.jpg'); }
-.media-lavender { background-image: url('./assets/lavenderfields.jpg'); }
-.media-heritage { background-image: url('./assets/gorges-du-verdon-provence-france-europe-34063034.webp'); }
-.media-truffle { background-image: url('./assets/truffelhunt.avif'); }
+.media-perfume { background-image: url('/assets/perfumemaking.jpg'); }
+.media-olive { background-image: url('/assets/oliveoilmaking.jpg'); }
+.media-lavender { background-image: url('/assets/lavenderfields.jpg'); }
+.media-heritage { background-image: url('/assets/gorges-du-verdon-provence-france-europe-34063034.webp'); }
+.media-truffle { background-image: url('/assets/truffelhunt.avif'); }
 
 .card-body { 
   padding: 1.5rem 1.75rem; 
@@ -1333,6 +1333,59 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
   padding: 2rem;
   color: var(--text);
   font-style: italic;
+}
+
+/* Available Dates Links */
+#available-dates-container {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+#available-dates-container h4 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+#available-dates-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  #available-dates-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.date-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.date-link:hover {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+.date-link:active {
+  transform: translateY(0);
 }
 
 /* Interactive Day Trips Map */
