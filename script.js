@@ -1266,10 +1266,10 @@ function addCompanionField() {
   companionDiv.className = 'companion-entry';
   companionDiv.setAttribute('data-companion-id', companionCount);
   companionDiv.innerHTML = `
-    <div style="background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div class="companion-card" style="background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+      <div class="companion-header">
+        <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.5rem 0.9rem; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); margin-bottom: 0.75rem; width: 100%;">Remove</button>
         <h5 style="margin: 0; font-size: 1rem; color: var(--text); font-weight: 600;">Person ${companionCount}</h5>
-        <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.4rem 0.75rem; font-size: 0.85rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Remove</button>
       </div>
       <div class="form-row two">
         <div>
