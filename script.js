@@ -1136,6 +1136,9 @@ function initDayTripsMap() {
   const mapContainer = document.getElementById('day-trips-map');
   if (!mapContainer) return;
 
+  // Check if mobile
+  const isMobile = window.innerWidth <= 768;
+
   // Destination data: { name, x, y (%), driveTime (minutes), category (short/medium/long), experienceMatch }
   const destinations = [
     // Short drives (≤1h30) - Green
@@ -1180,17 +1183,17 @@ function initDayTripsMap() {
   const castellaneCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   castellaneCircle.setAttribute('cx', '50');
   castellaneCircle.setAttribute('cy', '50');
-  castellaneCircle.setAttribute('r', '2');
+  castellaneCircle.setAttribute('r', isMobile ? '2.5' : '2');
   castellaneCircle.setAttribute('fill', '#ef4444');
   castellaneCircle.setAttribute('stroke', '#fff');
-  castellaneCircle.setAttribute('stroke-width', '0.5');
+  castellaneCircle.setAttribute('stroke-width', isMobile ? '0.8' : '0.5');
   castellaneGroup.appendChild(castellaneCircle);
   
   const castellaneLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   castellaneLabel.setAttribute('x', '50');
-  castellaneLabel.setAttribute('y', '47');
+  castellaneLabel.setAttribute('y', isMobile ? '46' : '47');
   castellaneLabel.setAttribute('text-anchor', 'middle');
-  castellaneLabel.setAttribute('font-size', '1.5');
+  castellaneLabel.setAttribute('font-size', isMobile ? '2' : '1.5');
   castellaneLabel.setAttribute('font-weight', 'bold');
   castellaneLabel.setAttribute('fill', '#1e3a5f');
   castellaneLabel.textContent = 'Castellane';
@@ -1206,7 +1209,7 @@ function initDayTripsMap() {
     route.setAttribute('y2', dest.y);
     const color = dest.category === 'short' ? '#10b981' : dest.category === 'medium' ? '#f59e0b' : '#2563eb';
     route.setAttribute('stroke', color);
-    route.setAttribute('stroke-width', '0.3');
+    route.setAttribute('stroke-width', isMobile ? '0.4' : '0.3');
     route.setAttribute('opacity', '0.3');
     route.classList.add('map-route');
     svg.appendChild(route);
@@ -1219,38 +1222,44 @@ function initDayTripsMap() {
     }
 
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('r', '1.2');
+    // Larger touch targets on mobile
+    circle.setAttribute('r', isMobile ? '1.8' : '1.2');
     const circleColor = dest.category === 'short' ? '#10b981' : dest.category === 'medium' ? '#f59e0b' : '#2563eb';
     circle.setAttribute('fill', circleColor);
     circle.setAttribute('stroke', '#fff');
-    circle.setAttribute('stroke-width', '0.3');
+    circle.setAttribute('stroke-width', isMobile ? '0.5' : '0.3');
     destGroup.appendChild(circle);
 
     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     label.setAttribute('x', '0');
-    label.setAttribute('y', '-2');
+    label.setAttribute('y', isMobile ? '-3' : '-2');
     label.setAttribute('text-anchor', 'middle');
-    label.setAttribute('font-size', '1');
+    label.setAttribute('font-size', isMobile ? '1.3' : '1');
     label.setAttribute('font-weight', '600');
     label.setAttribute('fill', '#1e3a5f');
-    label.textContent = dest.name;
+    // Shorten long names on mobile to prevent overlap
+    const displayName = isMobile && dest.name.length > 12 ? dest.name.substring(0, 10) + '...' : dest.name;
+    label.textContent = displayName;
     destGroup.appendChild(label);
 
     const timeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     timeLabel.setAttribute('x', '0');
-    timeLabel.setAttribute('y', '3');
+    timeLabel.setAttribute('y', isMobile ? '4' : '3');
     timeLabel.setAttribute('text-anchor', 'middle');
-    timeLabel.setAttribute('font-size', '0.8');
+    timeLabel.setAttribute('font-size', isMobile ? '1' : '0.8');
     timeLabel.setAttribute('fill', '#6b7280');
     const hours = Math.floor(dest.driveTime / 60);
     const minutes = dest.driveTime % 60;
     timeLabel.textContent = minutes === 0 ? `${hours}h` : minutes < 10 ? `${hours}h0${minutes}` : `${hours}h${minutes}`;
     destGroup.appendChild(timeLabel);
 
-    // Add click handler
+    // Add click/touch handlers for better mobile support
     destGroup.style.cursor = dest.experienceMatch ? 'pointer' : 'default';
     if (dest.experienceMatch) {
-      destGroup.addEventListener('click', () => {
+      const handleDestinationClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
         // Scroll to experiences section
         const experiencesSection = document.getElementById('experiences');
         if (experiencesSection) {
@@ -1273,7 +1282,11 @@ function initDayTripsMap() {
             });
           }, 500);
         }
-      });
+      };
+      
+      // Support both click and touch events for mobile
+      destGroup.addEventListener('click', handleDestinationClick);
+      destGroup.addEventListener('touchend', handleDestinationClick, { passive: true });
     }
 
     svg.appendChild(destGroup);
