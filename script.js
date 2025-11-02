@@ -1435,22 +1435,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Handle cancellation policy link click
+  // Handle cancellation policy link click - show modal
   const cancellationLink = document.getElementById('cancellation-policy-link');
+  const cancellationModal = document.getElementById('cancellation-policy-modal');
+  const closeCancellationModal = document.getElementById('close-cancellation-modal');
+  
+  function showCancellationModal() {
+    if (cancellationModal) {
+      cancellationModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+  
+  function hideCancellationModal() {
+    if (cancellationModal) {
+      cancellationModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+  
   if (cancellationLink) {
     cancellationLink.addEventListener('click', (e) => {
       e.preventDefault();
-      const pricingTabBtn = document.querySelector('[data-tab="pricing"]');
-      if (pricingTabBtn) {
-        pricingTabBtn.click();
-        setTimeout(() => {
-          const details = document.querySelector('.cancellation-details');
-          if (details) {
-            details.open = true;
-            details.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 300);
+      showCancellationModal();
+    });
+  }
+  
+  if (closeCancellationModal) {
+    closeCancellationModal.addEventListener('click', hideCancellationModal);
+  }
+  
+  // Close modal when clicking outside
+  if (cancellationModal) {
+    cancellationModal.addEventListener('click', (e) => {
+      if (e.target === cancellationModal) {
+        hideCancellationModal();
       }
     });
   }
+  
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cancellationModal && cancellationModal.style.display !== 'none') {
+      hideCancellationModal();
+    }
+  });
 });
