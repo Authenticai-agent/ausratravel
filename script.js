@@ -1131,11 +1131,163 @@ function initExtraDaysCalendars() {
   }
 }
 
+// Interactive Day Trips Map
+function initDayTripsMap() {
+  const mapContainer = document.getElementById('day-trips-map');
+  if (!mapContainer) return;
+
+  // Destination data: { name, x, y (%), driveTime (minutes), category (short/medium/long), experienceMatch }
+  const destinations = [
+    // Short drives (≤1h30) - Green
+    { name: 'Lac de Castillon', x: 45, y: 55, driveTime: 43, category: 'short', experienceMatch: 'Castellane Heritage' },
+    { name: 'Lac de Ste Croix', x: 48, y: 58, driveTime: 43, category: 'short', experienceMatch: 'Castellane Heritage' },
+    { name: 'Gorges du Verdon', x: 50, y: 52, driveTime: 90, category: 'short', experienceMatch: 'Castellane Heritage' },
+    { name: 'Rougon', x: 52, y: 50, driveTime: 45, category: 'short', experienceMatch: 'Castellane Heritage' },
+    { name: 'Sisteron', x: 25, y: 35, driveTime: 90, category: 'short' },
+    { name: 'Forcalquier', x: 30, y: 30, driveTime: 90, category: 'short' },
+    { name: 'Aups', x: 65, y: 70, driveTime: 90, category: 'short' },
+    { name: 'Lac d\'Allos', x: 55, y: 40, driveTime: 90, category: 'short' },
+    
+    // Medium drives (1h50-2h) - Orange
+    { name: 'Grasse', x: 85, y: 65, driveTime: 100, category: 'medium', experienceMatch: 'Perfume Making Grasse' },
+    { name: 'Vence', x: 88, y: 62, driveTime: 100, category: 'medium' },
+    { name: 'Gréolières', x: 82, y: 58, driveTime: 100, category: 'medium' },
+    { name: 'Sénanque', x: 40, y: 25, driveTime: 105, category: 'medium' },
+    { name: 'Saint-Martin-Vésubie', x: 92, y: 50, driveTime: 100, category: 'medium' },
+    { name: 'Gorges du Loup', x: 86, y: 68, driveTime: 120, category: 'medium' },
+    { name: 'Avignon', x: 15, y: 20, driveTime: 120, category: 'medium' },
+    
+    // Long drives (2h30+) - Blue
+    { name: 'Nice', x: 95, y: 60, driveTime: 150, category: 'long' },
+    { name: 'Saint-Raphaël', x: 90, y: 80, driveTime: 150, category: 'long' },
+    { name: 'Cassis', x: 70, y: 85, driveTime: 130, category: 'long' },
+    { name: 'Calanques', x: 68, y: 88, driveTime: 130, category: 'long' },
+    { name: 'Luberon villages', x: 20, y: 15, driveTime: 150, category: 'long' },
+    { name: 'Lourmarin', x: 22, y: 18, driveTime: 140, category: 'long' },
+    { name: 'Barcelonnette', x: 60, y: 25, driveTime: 120, category: 'long' },
+  ];
+
+  // Create SVG map
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.style.width = '100%';
+  svg.style.height = '100%';
+  svg.style.minHeight = '500px';
+
+  // Create Castellane center point
+  const castellaneGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const castellaneCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  castellaneCircle.setAttribute('cx', '50');
+  castellaneCircle.setAttribute('cy', '50');
+  castellaneCircle.setAttribute('r', '2');
+  castellaneCircle.setAttribute('fill', '#ef4444');
+  castellaneCircle.setAttribute('stroke', '#fff');
+  castellaneCircle.setAttribute('stroke-width', '0.5');
+  castellaneGroup.appendChild(castellaneCircle);
+  
+  const castellaneLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  castellaneLabel.setAttribute('x', '50');
+  castellaneLabel.setAttribute('y', '47');
+  castellaneLabel.setAttribute('text-anchor', 'middle');
+  castellaneLabel.setAttribute('font-size', '1.5');
+  castellaneLabel.setAttribute('font-weight', 'bold');
+  castellaneLabel.setAttribute('fill', '#1e3a5f');
+  castellaneLabel.textContent = 'Castellane';
+  castellaneGroup.appendChild(castellaneLabel);
+  svg.appendChild(castellaneGroup);
+
+  // Create routes and destinations
+  destinations.forEach(dest => {
+    const route = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    route.setAttribute('x1', '50');
+    route.setAttribute('y1', '50');
+    route.setAttribute('x2', dest.x);
+    route.setAttribute('y2', dest.y);
+    const color = dest.category === 'short' ? '#10b981' : dest.category === 'medium' ? '#f59e0b' : '#2563eb';
+    route.setAttribute('stroke', color);
+    route.setAttribute('stroke-width', '0.3');
+    route.setAttribute('opacity', '0.3');
+    route.classList.add('map-route');
+    svg.appendChild(route);
+
+    const destGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    destGroup.setAttribute('transform', `translate(${dest.x}, ${dest.y})`);
+    destGroup.classList.add('map-destination', dest.category);
+    if (dest.experienceMatch) {
+      destGroup.classList.add('has-experience');
+    }
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('r', '1.2');
+    const circleColor = dest.category === 'short' ? '#10b981' : dest.category === 'medium' ? '#f59e0b' : '#2563eb';
+    circle.setAttribute('fill', circleColor);
+    circle.setAttribute('stroke', '#fff');
+    circle.setAttribute('stroke-width', '0.3');
+    destGroup.appendChild(circle);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', '0');
+    label.setAttribute('y', '-2');
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('font-size', '1');
+    label.setAttribute('font-weight', '600');
+    label.setAttribute('fill', '#1e3a5f');
+    label.textContent = dest.name;
+    destGroup.appendChild(label);
+
+    const timeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    timeLabel.setAttribute('x', '0');
+    timeLabel.setAttribute('y', '3');
+    timeLabel.setAttribute('text-anchor', 'middle');
+    timeLabel.setAttribute('font-size', '0.8');
+    timeLabel.setAttribute('fill', '#6b7280');
+    const hours = Math.floor(dest.driveTime / 60);
+    const minutes = dest.driveTime % 60;
+    timeLabel.textContent = minutes >= 30 ? `${hours}h${minutes}` : `${hours}h${minutes}`;
+    destGroup.appendChild(timeLabel);
+
+    // Add click handler
+    destGroup.style.cursor = dest.experienceMatch ? 'pointer' : 'default';
+    if (dest.experienceMatch) {
+      destGroup.addEventListener('click', () => {
+        // Scroll to experiences section
+        const experiencesSection = document.getElementById('experiences');
+        if (experiencesSection) {
+          experiencesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Find and highlight the matching experience card
+          setTimeout(() => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+              const title = card.querySelector('h3');
+              if (title && title.textContent.includes(dest.experienceMatch)) {
+                card.style.border = '3px solid #2563eb';
+                card.style.boxShadow = '0 8px 24px rgba(37, 99, 235, 0.3)';
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                  card.style.border = '';
+                  card.style.boxShadow = '';
+                }, 3000);
+              }
+            });
+          }, 500);
+        }
+      });
+    }
+
+    svg.appendChild(destGroup);
+  });
+
+  mapContainer.appendChild(svg);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickrInit();
   recalcPrice();
   loadReviews();
   initializeStripe();
+  initDayTripsMap();
   
   // Initialize extra days calendars when checkbox is checked
   const needExtraDaysCheckbox = document.getElementById('need-extra-days');

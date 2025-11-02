@@ -1334,6 +1334,133 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
   font-style: italic;
 }
 
+/* Interactive Day Trips Map */
+.day-trips-map-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.day-trips-map {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.map-destination {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.map-destination:hover {
+  transform: scale(1.1);
+  z-index: 20;
+}
+
+.map-destination-point {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid white;
+  background: #10b981;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+}
+
+.map-destination-label {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.95);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.map-destination:hover .map-destination-label {
+  opacity: 1;
+}
+
+.map-route {
+  stroke-width: 2;
+  fill: none;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.map-destination:hover ~ .map-route,
+.map-route:hover {
+  opacity: 0.8;
+}
+
+.map-destination.medium .map-destination-point {
+  background: #f59e0b;
+}
+
+.map-destination.long .map-destination-point {
+  background: #2563eb;
+}
+
+.map-destination.has-experience .map-destination-point {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.map-tooltip {
+  position: absolute;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 100;
+  pointer-events: none;
+  font-size: 0.9rem;
+  max-width: 250px;
+  display: none;
+}
+
+.map-tooltip.show {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .day-trips-map {
+    min-height: 400px;
+    padding: 1rem;
+  }
+  
+  .map-destination-label {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .map-destination-point {
+    width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+  }
+}
+
 /* Utilities */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 1px, 1px); border: 0; }
 
