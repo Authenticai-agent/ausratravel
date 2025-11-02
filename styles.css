@@ -343,8 +343,6 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   min-height: 48px; /* Touch-friendly */
-}
-  white-space: nowrap;
   position: relative;
   bottom: -2px;
   flex: 1 1 auto;
