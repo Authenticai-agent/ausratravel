@@ -1262,6 +1262,9 @@ function addCompanionField() {
   const container = document.getElementById('travel-companions-container');
   if (!container) return;
   
+  // Person number is companionCount + 1 (because Person 1 is the primary guest)
+  const personNumber = companionCount + 1;
+  
   const companionDiv = document.createElement('div');
   companionDiv.className = 'companion-entry';
   companionDiv.setAttribute('data-companion-id', companionCount);
@@ -1269,7 +1272,7 @@ function addCompanionField() {
     <div class="companion-card" style="background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
       <div class="companion-header">
         <button type="button" class="btn btn-secondary small remove-companion" data-id="${companionCount}" style="padding: 0.5rem 0.9rem; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); margin-bottom: 0.75rem; width: 100%;">Remove</button>
-        <h5 style="margin: 0; font-size: 1rem; color: var(--text); font-weight: 600;">Person ${companionCount}</h5>
+        <h5 style="margin: 0; font-size: 1rem; color: var(--text); font-weight: 600;">Person ${personNumber}</h5>
       </div>
       <div class="form-row two">
         <div>
@@ -1310,7 +1313,8 @@ function updateCompanionNumbers() {
   const companions = document.querySelectorAll('.companion-entry');
   companions.forEach((comp, index) => {
     const h5 = comp.querySelector('h5');
-    if (h5) h5.textContent = `Person ${index + 1}`;
+    // Person 1 is the primary guest, so companions start at Person 2
+    if (h5) h5.textContent = `Person ${index + 2}`;
   });
 }
 
