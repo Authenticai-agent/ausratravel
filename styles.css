@@ -15,21 +15,49 @@
   --border-light: #f3f4f6;
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+* { 
+  box-sizing: border-box; 
+}
+
+html, body { 
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling on all devices */
+  max-width: 100vw;
+}
+
 body {
   margin: 0;
+  padding: 0;
   background: #ffffff;
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Prevent text from causing overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* Prevent horizontal scrolling */
+  position: relative;
 }
 
 .container {
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
+  /* Prevent horizontal overflow */
+  max-width: 100%;
+  overflow-x: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -450,10 +478,22 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  max-width: 100%;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .tab-card-media {
+    height: 200px;
+  }
 }
 
 .tab-card-content {
   padding: 2rem;
+  /* Prevent text overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
 }
 
 @media (max-width: 600px) {
@@ -462,10 +502,27 @@ body {
   }
   .tab-card-content h3 {
     font-size: 1.25rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .tab-card-content > p {
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .feature-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+  .feature-item {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .feature-item strong,
+  .feature-item p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
 
@@ -501,6 +558,10 @@ body {
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 12px;
+  /* Prevent text overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
 }
 
 .feature-item strong {
@@ -508,6 +569,8 @@ body {
   color: var(--text);
   margin-bottom: .4rem;
   font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .feature-item p {
@@ -515,6 +578,19 @@ body {
   color: var(--text);
   font-size: .9rem;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.feature-item ul,
+.feature-item ol {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.feature-item li {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .daily-plan {
@@ -562,6 +638,17 @@ body {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow);
+  /* Prevent text overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+}
+
+@media (max-width: 600px) {
+  .pricing-card {
+    margin: 0 auto 1.5rem;
+    border-radius: 16px;
+  }
 }
 
 .pricing-card-header {
@@ -1401,24 +1488,298 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   animation: slideUp 0.3s ease;
   margin: 1rem;
+  /* Prevent horizontal overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Mobile modal styles - comprehensive responsiveness */
 @media (max-width: 600px) {
+  .form-modal {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+  
   .form-modal-content {
-    margin: 0.5rem;
+    margin: 0;
     border-radius: 12px;
-    max-height: 95vh;
+    max-height: 98vh;
+    width: calc(100% - 1rem);
+    max-width: 100%;
   }
+  
   .form-modal-header {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
+  
   .form-modal-header h3 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
+  
+  .form-modal-close {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+  
   .custom-request-form {
-    padding: 1.5rem;
+    padding: 1.25rem;
+  }
+  
+  /* Modal content padding */
+  .form-modal-content > div[style*="padding"] {
+    padding: 1.25rem !important;
+  }
+  
+  /* Tab card content in modals */
+  .form-modal-content .tab-card-content,
+  .form-modal-content .pricing-card {
+    padding: 1.25rem;
+  }
+  
+  .form-modal-content .tab-card-content h3,
+  .form-modal-content .pricing-card-header h3 {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .form-modal-content .tab-card-content > p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Feature grid in modals */
+  .form-modal-content .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+    margin-top: 1rem;
+  }
+  
+  .form-modal-content .feature-item {
+    padding: 0.875rem;
+  }
+  
+  .form-modal-content .feature-item strong {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .form-modal-content .feature-item p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Pricing card in modals */
+  .form-modal-content .pricing-card-header {
+    padding: 1rem 1.25rem;
+    flex-wrap: wrap;
+  }
+  
+  .form-modal-content .pricing-card-body {
+    padding: 1.25rem;
+  }
+  
+  .form-modal-content .pricing-item {
+    padding: 0.75rem 0.875rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .form-modal-content .pricing-label,
+  .form-modal-content .pricing-value {
+    font-size: 0.875rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Images in modals */
+  .form-modal-content .tab-card-media {
+    height: 200px;
+  }
+  
+  .form-modal-content img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* Subtabs in modals */
+  .form-modal-content .subtabs-nav {
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding-bottom: 0.5rem;
+    margin: 1.5rem 0 1rem;
+  }
+  
+  .form-modal-content .subtab-btn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 40px;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Gallery grid in modals */
+  .form-modal-content .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  /* Daily plan in modals */
+  .form-modal-content .daily-plan {
+    gap: 0.875rem;
+  }
+  
+  .form-modal-content .plan-day {
+    padding: 1rem;
+  }
+  
+  .form-modal-content .plan-day h4 {
+    font-size: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .form-modal-content .plan-day p {
+    font-size: 0.875rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Lists in modals */
+  .form-modal-content ul,
+  .form-modal-content ol {
+    padding-left: 1.25rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .form-modal-content li {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Links in modals */
+  .form-modal-content a {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: inline-block;
+    max-width: 100%;
+  }
+  
+  /* Buttons in modals */
+  .form-modal-content .btn {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Reviews form in modals */
+  .form-modal-content .review-form {
+    padding: 0;
+  }
+  
+  .form-modal-content .reviews-form-section,
+  .form-modal-content .reviews-display-section {
+    padding: 0;
+    margin-top: 1.5rem;
+  }
+  
+  .form-modal-content .reviews-form-section h4,
+  .form-modal-content .reviews-display-section h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Extra small devices (iPhone SE, small Android) */
+@media (max-width: 375px) {
+  .form-modal {
+    padding: 0.25rem;
+    padding-top: 0.5rem;
+  }
+  
+  .form-modal-content {
+    max-height: 99vh;
+    width: calc(100% - 0.5rem);
+    border-radius: 10px;
+  }
+  
+  .form-modal-header {
+    padding: 0.875rem 1rem;
+  }
+  
+  .form-modal-header h3 {
+    font-size: 1.05rem;
+  }
+  
+  .form-modal-content > div[style*="padding"] {
+    padding: 1rem !important;
+  }
+  
+  .form-modal-content .tab-card-content,
+  .form-modal-content .pricing-card {
+    padding: 1rem;
+  }
+  
+  .form-modal-content .tab-card-content h3 {
+    font-size: 1.1rem;
+  }
+  
+  .form-modal-content .tab-card-content > p {
+    font-size: 0.9rem;
+  }
+  
+  .form-modal-content .feature-item {
+    padding: 0.75rem;
+  }
+  
+  .form-modal-content .feature-item strong {
+    font-size: 0.9rem;
+  }
+  
+  .form-modal-content .feature-item p {
+    font-size: 0.8rem;
+  }
+  
+  .form-modal-content .subtab-btn {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.75rem;
+    min-height: 38px;
+  }
+  
+  .form-modal-content .btn {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -1622,6 +1983,20 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  max-width: 100%;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .gallery-item {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .gallery-item img {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .gallery-item:hover img {
