@@ -72,6 +72,15 @@ body {
   }
 }
 
+/* Prevent overflow in all sections */
+section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .site-header {
   position: sticky;
   top: 0;
