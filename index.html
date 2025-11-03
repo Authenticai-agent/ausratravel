@@ -42,7 +42,7 @@
             <div class="container">
                 <div class="info-tabs">
                     <div class="tabs-nav">
-                        <button class="tab-btn active" data-tab="pricing">Transparent Pricing</button>
+                        <button class="tab-btn" data-tab="pricing">Transparent Pricing</button>
                         <button class="tab-btn" data-tab="accommodation">Accommodation</button>
                         <button class="tab-btn" data-tab="food">Food</button>
                         <button class="tab-btn" data-tab="sample-itineraries">Sample Itineraries</button>
@@ -115,7 +115,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content active" id="tab-pricing">
+                    <div class="tab-content" id="tab-pricing" style="display: none;">
                         <div class="pricing-card">
                             <div class="pricing-card-header">
                                 <h3>Transparent Pricing</h3>
@@ -183,7 +183,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-accommodation">
+                    <div class="tab-content" id="tab-accommodation" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-media">
                                 <img src="/assets/accommodation-placeholder.jpg" alt="Accommodation in Provence" onerror="this.src='https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop'">
@@ -213,7 +213,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-food">
+                    <div class="tab-content" id="tab-food" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-media">
                                 <img src="/assets/food-placeholder.jpg" alt="Provençal cuisine" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1600&auto=format&fit=crop'">
@@ -243,7 +243,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-sample-itineraries">
+                    <div class="tab-content" id="tab-sample-itineraries" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-media">
                                 <img src="/assets/activities-placeholder.jpg" alt="Daily activities in Provence" onerror="this.src='https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop'">
@@ -270,7 +270,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-artisans">
+                    <div class="tab-content" id="tab-artisans" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-media">
                                 <img src="/assets/artisans-placeholder.jpg" alt="Local artisans in Castellane" onerror="this.src='https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?q=80&w=1600&auto=format&fit=crop'">
@@ -578,7 +578,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-gallery">
+                    <div class="tab-content" id="tab-gallery" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-content">
                                 <h3>Gallery</h3>
@@ -607,7 +607,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-content" id="tab-reviews">
+                    <div class="tab-content" id="tab-reviews" style="display: none;">
                         <div class="tab-card">
                             <div class="tab-card-content">
                                 <h3>Guest Reviews</h3>
@@ -1268,6 +1268,112 @@
                         <strong style="display: block; margin-bottom: 0.5rem; color: var(--text); font-size: 1rem;">Cancellation within 30 days:</strong>
                         <p style="margin: 0; color: var(--text); line-height: 1.6;">50% of paid amount refunded</p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Modals (for Pricing, Accommodation, Food, Sample Itineraries, Artisans, About Us, Gallery, Reviews) -->
+        
+        <!-- Pricing Modal -->
+        <div id="modal-pricing" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Transparent Pricing</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="pricing" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-pricing-content">
+                    <!-- Content will be populated from tab-pricing -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Accommodation Modal -->
+        <div id="modal-accommodation" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Accommodation</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="accommodation" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-accommodation-content">
+                    <!-- Content will be populated from tab-accommodation -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Modal -->
+        <div id="modal-food" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Food</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="food" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-food-content">
+                    <!-- Content will be populated from tab-food -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Itineraries Modal -->
+        <div id="modal-sample-itineraries" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Sample Itineraries</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="sample-itineraries" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-sample-itineraries-content">
+                    <!-- Content will be populated from tab-sample-itineraries -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Local Artisans & Guides Modal -->
+        <div id="modal-artisans" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Local Artisans & Guides</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="artisans" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-artisans-content">
+                    <!-- Content will be populated from tab-artisans -->
+                </div>
+            </div>
+        </div>
+
+        <!-- About Us Modal -->
+        <div id="modal-about-us" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>About Us</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="about-us" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-about-us-content">
+                    <!-- Content will be populated from tab-about-us -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Modal -->
+        <div id="modal-gallery" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Gallery</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="gallery" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-gallery-content">
+                    <!-- Content will be populated from tab-gallery -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Modal -->
+        <div id="modal-reviews" class="form-modal" style="display: none;">
+            <div class="form-modal-content" style="max-width: 900px;">
+                <div class="form-modal-header">
+                    <h3>Reviews</h3>
+                    <button class="form-modal-close close-tab-modal" data-modal="reviews" aria-label="Close">&times;</button>
+                </div>
+                <div style="padding: 1.75rem;" id="modal-reviews-content">
+                    <!-- Content will be populated from tab-reviews -->
                 </div>
             </div>
         </div>

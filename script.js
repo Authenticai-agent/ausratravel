@@ -2,37 +2,98 @@
 document.addEventListener('DOMContentLoaded', () => {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
+  
+  // List of tabs that should open as modals (all except booking)
+  const modalTabs = ['pricing', 'accommodation', 'food', 'sample-itineraries', 'artisans', 'about-us', 'gallery', 'reviews'];
+  
+  // Store scroll position when opening modals
+  let savedScrollPosition = 0;
+  
+  // Copy tab content to modals on page load
+  function initializeTabModals() {
+    modalTabs.forEach(tabId => {
+      const tabContent = document.getElementById(`tab-${tabId}`);
+      const modalContent = document.getElementById(`modal-${tabId}-content`);
+      
+      if (tabContent && modalContent) {
+        // Clone the inner content (without the tab-card wrapper)
+        const innerContent = tabContent.querySelector('.tab-card, .pricing-card');
+        if (innerContent) {
+          // Clone the element to avoid ID conflicts
+          const clonedContent = innerContent.cloneNode(true);
+          
+          // For About Us tab, we need to make subtab IDs unique in the modal
+          if (tabId === 'about-us') {
+            // Update all subtab content IDs to be unique in modal
+            clonedContent.querySelectorAll('[id^="subtab-"]').forEach(el => {
+              el.id = `modal-${el.id}`;
+            });
+            // Update data-subtab references to match
+            clonedContent.querySelectorAll('[data-subtab]').forEach(el => {
+              const subtabId = el.getAttribute('data-subtab');
+              // Update button references
+              if (el.classList.contains('subtab-btn')) {
+                // Keep data-subtab as is, but update the target selector logic
+              }
+            });
+          }
+          
+          modalContent.innerHTML = clonedContent.outerHTML;
+        }
+      }
+    });
+  }
+  
+  // Initialize modals
+  initializeTabModals();
+  
+  // Initialize subtabs after modals are populated (they need to be in the DOM)
+  setTimeout(() => {
+    initializeSubtabs();
+  }, 100);
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabId = btn.getAttribute('data-tab');
       
-      // Remove active class from all buttons and contents
+      // Remove active class from all buttons
       tabBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => {
-        c.classList.remove('active');
-        c.style.display = 'none'; // Explicitly hide all tabs
-      });
       
-      // Add active class to clicked button and corresponding content
-      btn.classList.add('active');
-      const targetContent = document.getElementById(`tab-${tabId}`);
-      if (targetContent) {
-        targetContent.classList.add('active');
-        targetContent.style.display = 'block'; // Explicitly show active tab
-      }
-      
-      // Reinitialize calendar when booking tab is clicked
-      if (tabId === 'booking') {
-        // If booking step is not visible, ensure it's shown (in case user navigates directly)
+      // If it's a modal tab, open the modal
+      if (modalTabs.includes(tabId)) {
+        // Save scroll position
+        savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Show modal
+        const modal = document.getElementById(`modal-${tabId}`);
+        if (modal) {
+          modal.style.display = 'flex';
+          // Prevent body scroll
+          document.body.style.overflow = 'hidden';
+        }
+        
+        // Add active class to button
+        btn.classList.add('active');
+      } else if (tabId === 'booking') {
+        // Booking tab works as before - show inline content
+        tabContents.forEach(c => {
+          c.classList.remove('active');
+          c.style.display = 'none';
+        });
+        
+        btn.classList.add('active');
+        const targetContent = document.getElementById(`tab-${tabId}`);
+        if (targetContent) {
+          targetContent.classList.add('active');
+          targetContent.style.display = 'block';
+        }
+        
+        // Reinitialize calendar when booking tab is clicked
         const bookingStep = document.getElementById('booking-step');
         const questionnaireStep = document.getElementById('questionnaire-step');
-        // Only auto-show booking if coming from direct tab click (not from questionnaire flow)
         if (bookingStep && bookingStep.style.display === 'none' && questionnaireStep && !questionnaireStep.classList.contains('active')) {
-          // User clicked tab directly - show booking form
           proceedToBooking();
         } else {
-          // Just reinit calendar
           setTimeout(() => {
             flatpickrInit();
           }, 100);
@@ -40,30 +101,143 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  // Subtabs functionality for About Us section
-  const subtabBtns = document.querySelectorAll('.subtab-btn');
-  const subtabContents = document.querySelectorAll('.subtab-content');
-
-  subtabBtns.forEach(btn => {
+  
+  // Handle closing tab modals
+  function closeTabModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = 'none';
+      // Restore body scroll
+      document.body.style.overflow = '';
+      // Restore scroll position
+      window.scrollTo(0, savedScrollPosition);
+    }
+  }
+  
+  // Close modal buttons
+  document.querySelectorAll('.close-tab-modal').forEach(btn => {
     btn.addEventListener('click', () => {
-      const subtabId = btn.getAttribute('data-subtab');
+      const modalId = btn.getAttribute('data-modal');
+      if (modalId) {
+        closeTabModal(`modal-${modalId}`);
+        // Remove active class from tab button
+        const tabBtn = document.querySelector(`[data-tab="${modalId}"]`);
+        if (tabBtn) {
+          tabBtn.classList.remove('active');
+        }
+      }
+    });
+  });
+  
+  // Close modal when clicking outside
+  document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        const modalId = modal.id;
+        const tabId = modalId.replace('modal-', '');
+        closeTabModal(modalId);
+        // Remove active class from tab button
+        const tabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+        if (tabBtn) {
+          tabBtn.classList.remove('active');
+        }
+      }
+    });
+  });
+  
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      modalTabs.forEach(tabId => {
+        const modal = document.getElementById(`modal-${tabId}`);
+        if (modal && modal.style.display !== 'none') {
+          closeTabModal(`modal-${tabId}`);
+          // Remove active class from tab button
+          const tabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+          if (tabBtn) {
+            tabBtn.classList.remove('active');
+          }
+        }
+      });
+    }
+  });
+
+  // Subtabs functionality for About Us section (works in both original tab and modal)
+  function initializeSubtabs() {
+    // Use event delegation to handle subtab clicks in both original tab and modal
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.subtab-btn');
+      if (!btn) return;
       
-      // Remove active class from all subtab buttons and contents
-      subtabBtns.forEach(b => b.classList.remove('active'));
-      subtabContents.forEach(c => {
+      const subtabId = btn.getAttribute('data-subtab');
+      if (!subtabId) return;
+      
+      // Find the parent container (modal or tab)
+      const parentContainer = btn.closest('#modal-about-us-content, #tab-about-us');
+      if (!parentContainer) return;
+      
+      e.preventDefault();
+      
+      // Get all subtabs within the same container
+      const containerSubtabs = parentContainer.querySelectorAll('.subtab-btn');
+      const containerContents = parentContainer.querySelectorAll('.subtab-content');
+      
+      // Remove active class from all subtab buttons and contents in this container
+      containerSubtabs.forEach(b => b.classList.remove('active'));
+      containerContents.forEach(c => {
         c.classList.remove('active');
         c.style.display = 'none';
       });
       
       // Add active class to clicked button and show corresponding content
       btn.classList.add('active');
-      const targetSubtabContent = document.getElementById(`subtab-${subtabId}`);
+      
+      // Try to find subtab content - check both original ID and modal ID
+      let targetSubtabContent = parentContainer.querySelector(`#subtab-${subtabId}`);
+      if (!targetSubtabContent) {
+        targetSubtabContent = parentContainer.querySelector(`#modal-subtab-${subtabId}`);
+      }
+      
       if (targetSubtabContent) {
         targetSubtabContent.classList.add('active');
         targetSubtabContent.style.display = 'block';
       }
     });
+  }
+
+  // Handle links to tabs within modals/content
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#tab-"]');
+    if (!link) return;
+    
+    const href = link.getAttribute('href');
+    const tabId = href.replace('#tab-', '');
+    
+    // If it's a booking link, let it work normally
+    if (tabId === 'booking') {
+      return; // Let default behavior handle it
+    }
+    
+    // If it's a modal tab, close current modal and open the new one
+    if (modalTabs.includes(tabId)) {
+      e.preventDefault();
+      
+      // Close any open modal first
+      modalTabs.forEach(id => {
+        const modal = document.getElementById(`modal-${id}`);
+        if (modal && modal.style.display !== 'none') {
+          closeTabModal(`modal-${id}`);
+        }
+      });
+      
+      // Open the new modal
+      setTimeout(() => {
+        const btn = document.querySelector(`[data-tab="${tabId}"]`);
+        if (btn) {
+          btn.click();
+        }
+      }, 100);
+    }
   });
 
   // Handle hash navigation to tabs
@@ -73,9 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector(`[data-tab="${tabId}"]`);
     if (btn) {
       btn.click();
-      setTimeout(() => {
-        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      // For modal tabs, don't scroll (they're in modals)
+      if (!modalTabs.includes(tabId)) {
+        setTimeout(() => {
+          document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
     }
   }
 });
